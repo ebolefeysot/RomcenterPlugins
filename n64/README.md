@@ -1,0 +1,105 @@
+# Introduction
+If you just want to use the plug-in as soon as possible read at least the
+section "Installation".
+
+This is version 1.2 of the Nintendo 64 plug-in.
+The versions of RomCenter before 2.62 only support Nintendo 64 files in Doctor
+V64 (Junior) format. This plug-in adds support for Mr. Backup Z64 format (it
+also supports V64 format).
+
+
+# Version history
+1.0     Initial release
+
+1.1     Fixed a huge memory leak (1 MB per ROM dump)
+
+1.2     Added code to detect the files
+
+    "2 Blokes & An Armchair - Nintendo 64 Remix Remix (PD)",
+    "Zelda Boot Emu V1 (PD)" and
+    "Zelda Boot Emu V2 (PD)".
+
+
+# Contents of this package
+This package should contain the following files:
+
+    README.md
+    main.c
+    Makefile
+    Makefile.vc6
+    map.c
+    map.h
+    misc.c
+    misc.h
+    miscz.c
+    miscz.h
+    n64.c
+    n64.cfg
+    n64.def
+    n64.h
+    ucon64.c
+    ucon64.h
+    unzip.c
+    unzip.h
+
+
+# Installation
+Extract the package with a program like WinZip (http://www.winzip.com/), WinRAR (http://www.rarlab.com/) or Power Archiver (http://www.powerarchiver.com/).
+
+Put _one_ of the n64.dll files in the plugin directory of RomCenter. If you
+are using a version of RomCenter before 2.62 use n64.dll in the directory 2.61.
+If you are using RomCenter 2.62 (or newer) use n64.dll in the directory 2.62.
+
+Use the Nintendo 64 DAT file available from the uCON64 homepage
+(http://ucon64.sourceforge.net/#ucon64dat). Expect some file renaming problems
+if you use the Nintendo 64 DAT file available from Rob van der Drift's homepage
+(http://gooddat.emu-france.com/). The latter Nintendo 64 DAT file instructs
+RomCenter to use the plug-in arcade.dll. If you want RomCenter to use the new
+plug-in (n64.dll) in combination with that DAT file edit the file so that this
+line
+plugin=arcade.dll
+looks like this
+plugin=n64.dll
+
+This version of the plug-in has a feature that can be used to control what
+suffixes the plug-in will give to the files that it recognises. If you place a
+file named n64.cfg in the same directory as the RomCenter executable the
+plug-in will use that file for suffixes. The plug-in recognises the following
+"property-lines":
+
+    v64_suffix
+    z64_suffix
+
+Don't use spaces before the '='. You may use spaces in the suffix. For example:
+
+    v64_suffix=.Doctor V64
+
+
+# Compiling the plug-in
+You don't need to compile the plug-in unless you are a software developer and want to change or fix something.
+
+To compile the plug-in use Cygwin (http://www.cygwin.com), MinGW
+(http://www.mingw.org) or Visual C++. Cygwin and MinGW are ports of GCC. They are free. If you are using Cygwin or MinGW just type "make". If you don't use Msys (port of Bash for MinGW) you have to modify the makefile.
+
+To compile the plug-in with Visual C++ (version 6) type "nmake /f Makefile.vc6" on the command line (after you've run VCVARS32.BAT once).
+
+By default the plug-in will be compiled for RomCenter 2.62. If you want to compile the plug-in for older versions you have to make the following changes to the source code and makefiles.
+
+If you're using Cygwin or MinGW:
+- Change line 57 of Makefile into	cp $(LIBNAME).old.def tmp.def
+
+- Be sure to save the tab character(s) or make will complain.
+- Remove the hash symbol ('#') in front of line 58.
+
+If you're using Visual C++:
+- Put a hash symbol ('#') in front of line 1 of Makefile.vc6.
+- Change line 17 into DLLFLAGS=/NOLOGO /DLL $(OBJECTS) $(LIBS) /DEF:$(LIBNAME).old.def /OUT:$(LIBNAME).dll
+
+Regardless of the compiler you're using, remove the two slashes in front of line 39 of main.c so that the constant RC261_COMPATIBILITY will be defined.
+
+The changes are necessary, because RomCenter 2.62 uses a different plug-in API compared to previous versions. The difference is that the exported functions should now have the prefix "rc_". RomCenter 2.62 has been changed, because it required some ugly work-arouds to be able to compile a plug-in that is written in C. To be more specific, the old RomCenter plug-in API specification requires that there is a function GetVersion() in the plug-in. However, the Win32 API already contains a function with the same signature and thus compiling a plug-in with a C-compiler would in most circumstances generate a conflict. If not at compile-time then at link-time.
+
+
+# Bugs and problems
+If you find a bug or some other problem with this plug-in, feel free to contact
+me. You can contact me via dbjh@users.sourceforge.net.
