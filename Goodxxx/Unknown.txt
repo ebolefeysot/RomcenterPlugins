@@ -1,0 +1,70 @@
+These plugins were tested using actual Good* tools data,
+extracted from the good*.exe file.  Only a few files (6
+files out of 13 tested tools with thousands of ROMs) do
+not match the good* tools implementation, meaning that
+it is at least as good as the good* tool.  Of course,
+this will not make a difference if the same .dll file is
+used to make the .dat files.
+
+All .dll files still need to be tested with a .dat file
+maker as well as with RomCenter itself.  Status report
+follows, let me know if I am missing a Good* tool.
+
+for compatibility with TUGID (tosec.org) do not change
+the plugin names.  TUGID does not use the .dll, but I gave
+the header algos to Archie so TUGID uses them if it sees
+the plugin name in the .dat file.  Thanks to Archie and
+TOSEC for adding these.
+
+Codeine
+
+
+Changes:
+	A7800 does not use Cowering's algorithm, for better
+	preservation of accurate header data.
+	SNES is impossible to test against goodsnes data
+
+=========================
+Probably raw (arcade.dll)   SamC
+Not (yet) implemented:      N64, PSID
+untested, not released:     PCE
+
+
+
+=========================
+arcade.dll
+[100% verified]:      2600, 5200, Coco, Col, GG, Mo5, MSX1/2, MTX, NGPx, Oric, 
+                      SV, VBoy, Vect, WSX
+[partially verified]: CPC, GBA, Intv, Jag
+
+=========================
+Atari 7800 [good7800]
+[none, perfect implementation]
+
+=========================
+Lynx [goodlynx]
+[none, perfect implementation]
+
+=========================
+Nes [GoodNES]
+[none, perfect implementation]
+
+=========================
+GBX [GoodGBX]
+[none, perfect implementation]
+
+=========================
+Genesis [goodgen 0.999.7 almost complete]
+UNK: Game Genie (JUE) [c][!].zip
+UNK: Sample Program - Indian Picture (PD).zip
+UNK: Sonic the Hedgehog (JUE) [h5].zip
+
+=========================
+SMS [goodsms] - all three have bad file sizes
+UNK: Alex Kidd in Miracle World (Brazil) [b1].zip
+UNK: Great Golf (UE) [o2].zip
+UNK: Rodrigo o Resgate (WB Hack) [b1].zip
+
+=========================
+Snes [GoodSNES]
+[impossible to test against GoodSNES]

@@ -1,0 +1,12 @@
+LIBRARY   RCPlugins
+DESCRIPTION "TDB Output"
+EXPORTS
+	GetAuthor @1
+	GetDescription @2
+	GetDllInterfaceVersion @3
+	GetEmail @4
+	GetVersion @5
+	GetWebPage @6
+	GetDllType @7
+	GetPlugInName @8
+	GetSignature @9
