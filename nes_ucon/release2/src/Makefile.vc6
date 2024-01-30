@@ -1,0 +1,48 @@
+ZLIB=1
+
+CC=cl.exe
+CFLAGS=/nologo /W3 /O2 /DDLL
+#/DHAVE_CONFIG_H
+
+LIBNAME=nes
+OBJECTS=main.obj nes.obj ucon64.obj misc.obj quick_io.obj
+LIBS=advapi32.lib
+!ifdef ZLIB
+LIBS=$(LIBS) zlib.lib
+CFLAGS=$(CFLAGS) /DHAVE_ZLIB_H
+OBJECTS=$(OBJECTS) unzip.obj map.obj miscz.obj
+!endif
+
+FULLLIBNAME=$(LIBNAME).dll
+DLLFLAGS=/NOLOGO /DLL $(OBJECTS) $(LIBS) /DEF:$(LIBNAME).def /OUT:$(LIBNAME).dll
+
+
+all: $(FULLLIBNAME)
+
+
+clean:
+	del $(LIBNAME).dll
+	del $(LIBNAME).lib
+	del *.obj
+	del $(LIBNAME).exp
+
+
+.c.obj:
+	$(CC) $(CFLAGS) /c $< /Fo$@
+
+
+$(LIBNAME).dll: $(OBJECTS)
+	link.exe $(DLLFLAGS)
+# link.exe automatically creates the import library. "/IMPLIB:filename.lib"
+#  could be used to give the import library another name
+#	lib.exe $(DLLFLAGS) /OUT:$(LIBNAME).lib
+
+
+# Dependencies
+main.obj: misc.h miscz.h ucon64.h nes.h
+nes.obj: misc.h quick_io.h ucon64.h nes.h
+ucon64.obj: ucon64.h
+misc.obj: misc.h miscz.h
+quick_io.obj: misc.h quick_io.h
+map.obj: map.h
+miscz.obj: miscz.h misc.h map.h

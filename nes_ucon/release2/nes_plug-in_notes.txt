@@ -1,0 +1,139 @@
+Contents
+1.   Introduction
+2.   Version history
+3.   Contents of this package
+4.   Installation
+5.   Compiling the plug-in
+6.   Bugs and problems
+
+
+1. Introduction
+If you just want to use the plug-in as soon as possible read at least the
+section "4. Installation".
+
+This is version 1.1 of the NES plug-in.
+The original NES plug-in only detects NES files in iNES format. This plug-in
+recognises files in iNES, UNIF, Pasofami, FFE, FDS and FAM format.
+
+
+2. Version history
+1.0     Initial release
+1.1     - Changed detection code for iNES files. Instead of testing for
+        "NES\x1a" the plug-in now tests for "NES". This makes the plug-in
+        recognise two iNES files with incorrect iNES headers that are floating
+        around on the internet:
+        "Home Alone 2 - Lost in New York (U) [b3]" (magic: "NES\x19") and
+        "Linus Music Demo (PD)" (magic: "NES\x1b")
+        Thanks to HeYing for reporting this on the RomCenter Datafiles forum.
+
+
+3. Contents of this package
+This package should contain the following files:
+
+nes_plug-in_notes.txt
+2.61/nes.dll
+2.62/nes.dll
+src/main.c
+src/Makefile
+src/Makefile.vc6
+src/map.c
+src/map.h
+src/misc.c
+src/misc.h
+src/miscz.c
+src/miscz.h
+src/nes.c
+src/nes.cfg
+src/nes.def
+src/nes.h
+src/nes.old.def
+src/quick_io.c
+src/quick_io.h
+src/ucon64.c
+src/ucon64.h
+src/unzip.c
+src/unzip.h
+
+
+4. Installation
+Extract the package with a program like WinZip (http://www.winzip.com/), WinRAR
+(http://www.rarlab.com/) or Power Archiver (http://www.powerarchiver.com/).
+Put _one_ of the nes.dll files in the plugin directory of RomCenter. If you
+are using a version of RomCenter before 2.62 use nes.dll in the directory 2.61.
+If you are using RomCenter 2.62 (or newer) use nes.dll in the directory 2.62.
+Use the NES DAT file available from the uCON64 homepage
+(http://ucon64.sourceforge.net/#ucon64dat). Expect some file renaming problems
+if you use the NES DAT file available from Rob van der Drift's homepage
+(http://gooddat.emu-france.com/). The latter NES DAT file instructs RomCenter
+to use the plug-in nes11b.dll. If you want RomCenter to use the new plug-in
+(nes.dll) in combination with that DAT file edit the file so that this line
+plugin=nes11b.dll
+looks like this
+plugin=nes.dll
+
+This version of the plug-in has a feature that can be used to control what
+suffixes the plug-in will give to the files that it recognises. If you place a
+file named nes.cfg in the same directory as the RomCenter executable the
+plug-in will use that file for suffixes. The plug-in recognises the following
+"property-lines":
+ines_suffix
+unif_suffix
+pasofami_prm_suffix
+pasofami_prg_suffix
+pasofami_chr_suffix
+ffe_suffix
+fds_suffix
+fam_suffix
+
+Don't use spaces before the '='. You may use spaces in the suffix. For example:
+fds_suffix=.Famicom Disk System
+
+
+5. Compiling the plug-in
+You don't need to compile the plug-in unless you are a software developer and
+want to change or fix something.
+To compile the plug-in use Cygwin (http://www.cygwin.com), MinGW
+(http://www.mingw.org) or Visual C++. Cygwin and MinGW are ports of GCC. They
+are free. If you are using Cygwin or MinGW just type "make". If you don't use
+Msys (port of Bash for MinGW) you have to modify the makefile.
+To compile the plug-in with Visual C++ (version 6) type "nmake /f Makefile.vc6"
+on the command line (after you've run VCVARS32.BAT once).
+By default the plug-in will be compiled for RomCenter 2.62. If you want to
+compile the plug-in for older versions you have to make the following changes
+to the source code and makefiles.
+
+If you're using Cygwin or MinGW:
+- Change line 57 of Makefile into
+	cp $(LIBNAME).old.def tmp.def
+
+  Be sure to save the tab character(s) or make will complain.
+- Remove the hash symbol ('#') in front of line 58.
+
+If you're using Visual C++:
+- Put a hash symbol ('#') in front of line 1 of Makefile.vc6.
+- Change line 17 into
+DLLFLAGS=/NOLOGO /DLL $(OBJECTS) $(LIBS) /DEF:$(LIBNAME).old.def /OUT:$(LIBNAME).dll
+
+Regardless of the compiler you're using, remove the two slashes in front of
+line 39 of main.c so that the constant RC261_COMPATIBILITY will be defined.
+
+The changes are necessary, because RomCenter 2.62 uses a different plug-in API
+compared to previous versions. The difference is that the exported functions
+should now have the prefix "rc_". RomCenter 2.62 has been changed, because it
+required some ugly work-arouds to be able to compile a plug-in that is written
+in C. To be more specific, the old RomCenter plug-in API specification requires
+that there is a function GetVersion() in the plug-in. However, the Win32 API
+already contains a function with the same signature and thus compiling a
+plug-in with a C-compiler would in most circumstances generate a conflict. If
+not at compile-time then at link-time.
+
+
+6. Bugs and problems
+The plug-in uses the suffix of Pasofami files in order to recognise them. It
+uses hardcoded suffixes (.prm, .prg and .chr), not the ones specified in the
+configuration file. So, with this version it's best to not specify other
+suffixes for Pasofami files.
+If you find a bug or some other problem with this plug-in, feel free to contact
+me. You can contact me via dbjh@users.sourceforge.net.
+
+EOF
