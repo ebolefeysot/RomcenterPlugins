@@ -1,0 +1,9 @@
+EXPORTS
+GetSignature
+GetDllType
+GetDllInterfaceVersion
+GetPlugInName
+GetDescription
+GetAuthor
+GetEmail
+GetWebPage
