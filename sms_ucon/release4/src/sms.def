@@ -1,0 +1,10 @@
+EXPORTS
+rc_GetSignature
+rc_GetDllType
+rc_GetDllInterfaceVersion
+rc_GetPlugInName
+rc_GetVersion
+rc_GetDescription
+rc_GetAuthor
+rc_GetEmail
+rc_GetWebPage

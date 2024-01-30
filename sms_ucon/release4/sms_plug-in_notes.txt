@@ -1,0 +1,133 @@
+Contents
+1.   Introduction
+2.   Version history
+3.   Contents of this package
+4.   Installation
+5.   Compiling the plug-in
+6.   Bugs and problems
+
+
+1. Introduction
+If you just want to use the plug-in as soon as possible read at least the
+section "4. Installation".
+
+This is version 1.0 of the SMS plug-in.
+The versions of RomCenter before 2.62 only support Sega Master System/Game Gear
+files in Multi Game Doctor (MGD) format. This plug-in adds support for Super
+Magic Drive (SMD) format (it also supports MGD format).
+
+
+2. Version history
+1.0     Initial release
+        Many thanks to Dweezledap <emulation@emulationrealm.com> for testing.
+
+
+3. Contents of this package
+This package should contain the following files:
+
+sms_plug-in_notes.txt
+2.61/sms.dll
+2.62/sms.dll
+src/main.c
+src/Makefile
+src/Makefile.vc6
+src/map.c
+src/map.h
+src/misc.c
+src/misc.h
+src/miscz.c
+src/miscz.h
+src/sms.c
+src/sms.cfg
+src/sms.def
+src/sms.h
+src/sms.old.def
+src/ucon64.c
+src/ucon64.h
+src/unzip.c
+src/unzip.h
+
+
+4. Installation
+Extract the package with a program like WinZip (http://www.winzip.com/), WinRAR
+(http://www.rarlab.com/) or Power Archiver (http://www.powerarchiver.com/).
+Put _one_ of the sms.dll files in the plugin directory of RomCenter. If you
+are using a version of RomCenter before 2.62 use sms.dll in the directory
+2.61. If you are using RomCenter 2.62 (or newer) use sms.dll in the directory
+2.62.
+Of course you'll also need an appropriate DAT file. This plug-in recognises
+both Sega Master System and Game Gear files, but most people want to keep those
+files separate. Currently the DAT files that work best with this plug-in are
+the ones available from the uCON64 homepage (http://ucon64.sf.net#ucon64dat,
+the ones of which the name begins with gg- and sms-). In time they will be
+superseded by the ones available from
+http://emulationrealm.com/rcdat.php#Cowering_GoodTools.
+Although it's possible to use one DLL for both Sega Master System and Game Gear
+files, I strongly recommend to copy the DLL and give it a different name for
+either Sega Master System files or Game Gear files. For example, if you use
+sms.dll for Sega Master System files, copy the file to gg.dll for Game Gear
+files. If you want RomCenter to use the plug-in, make sure that the DAT file
+contains a line that looks like this:
+plugin=sms.dll
+
+Of course, if you gave the file another name, use that one.
+This version of the plug-in has a feature that can be used to control what
+suffixes the plug-in will suggest for the files that it recognises. If you
+place a file named sms.cfg in the same directory as the RomCenter executable
+the plug-in will use that file for suffixes. The plug-in recognises the
+following "property-lines":
+mgd_sms_suffix
+mgd_gg_suffix
+smd_sms_suffix
+smd_gg_suffix
+
+You may use spaces in the suffix. For example:
+smd_sms_suffix=.Super Magic Drive
+
+Note that by default, the plug-in suggests a suffix that indicates the console
+a file belongs to, as opposed to a suffix that indicates the format. The
+plug-in suggests the suffix .sms for SMS files and the suffix .gg for GG files,
+whether their format is MGD or SMD. If you want to change this behaviour use a
+configuration file.
+
+
+5. Compiling the plug-in
+You don't need to compile the plug-in unless you are a software developer and
+want to change or fix something.
+To compile the plug-in use Cygwin (http://www.cygwin.com), MinGW
+(http://www.mingw.org) or Visual C++. Cygwin and MinGW are ports of GCC. They
+are free. If you are using Cygwin or MinGW just type "make". If you don't use
+MSYS (port of Bash) for MinGW you have to modify the makefile.
+Please note: It appears that not all versions of Cygwin can be used to compile
+a working plug-in. If Cygwin doesn't work for you, just use MinGW.
+To compile the plug-in with Visual C++ (version 6) type "nmake /f Makefile.vc6"
+on the command line (after you've run VCVARS32.BAT once).
+By default the plug-in will be compiled for RomCenter 2.62. If you want to
+compile the plug-in for older versions you have to make the following changes
+to the source code and makefiles.
+
+If you're using Cygwin or MinGW:
+- Open Makefile in an editor and remove the hash symbol ('#') in front of line
+  4.
+
+If you're using Visual C++:
+- Open Makefile.vc6 in an editor and put a hash symbol ('#') in front of line
+  1.
+- Remove the hash symbol in front of line 2.
+
+The changes are necessary, because RomCenter 2.62 uses a different plug-in API
+compared to previous versions. The difference is that the exported functions
+should now have the prefix "rc_". RomCenter 2.62 has been changed, because it
+required some ugly work-arounds to be able to compile a plug-in that is written
+in C. To be more specific, the old RomCenter plug-in API specification requires
+that there is a function GetVersion() in the plug-in. However, the Win32 API
+already contains a function with the same signature and thus compiling a
+plug-in with a C-compiler would in most circumstances generate a conflict. If
+not at compile-time then at link-time.
+
+
+6. Bugs and problems
+If you find a bug or some other problem with this plug-in, feel free to contact
+me. You can contact me via dbjh@users.sourceforge.net.
+
+EOF

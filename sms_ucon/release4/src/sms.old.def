@@ -1,0 +1,10 @@
+EXPORTS
+GetSignature
+GetDllType
+GetDllInterfaceVersion
+GetPlugInName
+GetDescription
+GetAuthor
+GetEmail
+GetWebPage
+; GetVersion should not be listed for Visual C++

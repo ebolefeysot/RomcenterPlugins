@@ -1,0 +1,56 @@
+ZLIB=1
+#RC261_COMPATIBILITY=1
+
+CC=cl.exe
+CFLAGS=/nologo /W3 /O2 /DDLL
+!ifdef RC261_COMPATIBILITY
+CFLAGS=$(CFLAGS) /DRC261_COMPATIBILITY
+!endif
+#/DHAVE_CONFIG_H
+
+LIBNAME=sms
+OBJECTS=main.obj sms.obj ucon64.obj misc.obj
+LIBS=advapi32.lib
+!ifdef ZLIB
+LIBS=$(LIBS) zlib.lib
+CFLAGS=$(CFLAGS) /DHAVE_ZLIB_H
+OBJECTS=$(OBJECTS) unzip.obj map.obj miscz.obj
+!endif
+
+FULLLIBNAME=$(LIBNAME).dll
+DLLFLAGS=/NOLOGO /DLL $(OBJECTS) $(LIBS) /OUT:$(FULLLIBNAME)
+!ifdef RC261_COMPATIBILITY
+DLLFLAGS=$(DLLFLAGS) /DEF:$(LIBNAME).old.def
+!else
+DLLFLAGS=$(DLLFLAGS) /DEF:$(LIBNAME).def
+!endif
+
+
+all: $(FULLLIBNAME)
+
+
+clean:
+	del $(LIBNAME).dll
+	del $(LIBNAME).lib
+	del *.obj
+	del $(LIBNAME).exp
+
+
+.c.obj:
+	$(CC) $(CFLAGS) /c $< /Fo$@
+
+
+$(FULLLIBNAME): $(OBJECTS)
+	link.exe $(DLLFLAGS)
+# link.exe automatically creates the import library. "/IMPLIB:filename.lib"
+#  could be used to give the import library another name
+#	lib.exe $(DLLFLAGS) /OUT:$(LIBNAME).lib
+
+
+# Dependencies
+main.obj: misc.h miscz.h ucon64.h sms.h
+sms.obj: misc.h ucon64.h sms.h
+ucon64.obj: ucon64.h
+misc.obj: misc.h miscz.h
+map.obj: map.h
+miscz.obj: miscz.h misc.h map.h
