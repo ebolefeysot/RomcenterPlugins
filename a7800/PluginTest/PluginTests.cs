@@ -1,0 +1,93 @@
+namespace PluginTest
+{
+    public class PluginTests
+    {
+        private const string DllType = "romcenter signature calculator"; //Identification string, do not change
+        private const string InterfaceVersion = "4.0"; //version of romcenter plugin internal interface
+
+        private const string PlugInName = "Atari 7800 crc calculator"; //full name of plug in
+        private const string Author = "Eric Bole-Feysot"; //Author name
+        private const string Version = "2.0"; //version of the plug in
+        private const string WebPage = "www.romcenter.com"; //home page of plug in
+        private const string Email = "eric@romcenter.com"; //Email of plug in support
+        private const string Description = "Atari 7800 crc calculator. Skip the Atari 7800 file header to calculate the crc32. Support a78, bin format.";
+
+        private readonly IRomcenterPlugin romcenterPlugin;
+
+        public PluginTests()
+        {
+            var pluginPath = "A7800.dll";
+            romcenterPlugin = new ManagedPlugin(pluginPath);
+        }
+
+        /// <summary>
+        /// Test plugin info methods
+        /// </summary>
+        [Fact]
+        public void GetInfoTest()
+        {
+            Assert.Equal(DllType, romcenterPlugin.GetDllType());
+            Assert.Equal(PlugInName, romcenterPlugin.GetPlugInName());
+            Assert.Equal(Version, romcenterPlugin.GetVersion());
+            Assert.Equal(Author, romcenterPlugin.GetAuthor());
+            Assert.Equal(Description, romcenterPlugin.GetDescription());
+            Assert.Equal(InterfaceVersion, romcenterPlugin.GetDllInterfaceVersion());
+            Assert.Equal(Email, romcenterPlugin.GetEmail());
+            Assert.Equal(WebPage, romcenterPlugin.GetWebPage());
+        }
+
+        [Fact]
+        public void GetSignatureRawTest()
+        {
+            const string fileCrc = "22CA4444";
+            var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("bin", format.ToLowerInvariant());
+            Assert.Equal(4 * 1024, size);
+            Assert.Equal("", comment);
+            Assert.Equal("", errorMessage);
+            Assert.Equal(fileCrc, result);
+        }
+
+        [Fact]
+        public void GetSignatureHeaderTest()
+        {
+            const string fileCrc = "FC051004";
+            var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("a78", format.ToLowerInvariant());
+            Assert.Equal(4 * 1024, size);
+            Assert.Equal("", comment);
+            Assert.Equal("", errorMessage);
+            Assert.Equal("22CA4444", result);
+        }
+
+        /// <summary>
+        /// Rom size should be a multiple of 1024
+        /// </summary>
+        [Fact]
+        public void GetSignatureNotARomTest()
+        {
+            const string fileCrc = "3BCBD64D";
+            var result = romcenterPlugin.GetSignature(@"data\not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("bin", format.ToLowerInvariant());
+            Assert.Equal(7079, size);
+            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
+            Assert.Equal("", errorMessage);
+            Assert.Equal(fileCrc, result);
+        }
+
+        /// <summary>
+        /// File rom size should match rom size in header
+        /// </summary>
+        [Fact]
+        public void GetSignatureIncorrectSizeTest()
+        {
+            const string fileCrc = "22CA4444";
+            var result = romcenterPlugin.GetSignature(@"data\bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("a78", format.ToLowerInvariant());
+            Assert.Equal(4 * 1024, size);
+            Assert.StartsWith("rom size stored in header", comment.ToLowerInvariant());
+            Assert.Equal("", errorMessage);
+            Assert.Equal(fileCrc, result);
+        }
+    }
+}
