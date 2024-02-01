@@ -39,9 +39,9 @@ namespace PluginTest
         [Fact]
         public void GetSignatureRawTest()
         {
-            const string fileCrc = "22CA4444";
+            const string fileCrc = "22ca4444";
             var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("bin", format.ToLowerInvariant());
+            Assert.Equal(".bin", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.Equal("", comment);
             Assert.Equal("", errorMessage);
@@ -53,11 +53,11 @@ namespace PluginTest
         {
             const string fileCrc = "FC051004";
             var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("a78", format.ToLowerInvariant());
+            Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.Equal("", comment);
             Assert.Equal("", errorMessage);
-            Assert.Equal("22CA4444", result);
+            Assert.Equal("22ca4444", result);
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace PluginTest
         [Fact]
         public void GetSignatureNotARomTest()
         {
-            const string fileCrc = "3BCBD64D";
+            const string fileCrc = "3bcbd64d";
             var result = romcenterPlugin.GetSignature(@"data\not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("bin", format.ToLowerInvariant());
+            Assert.Equal("", format.ToLowerInvariant());
             Assert.Equal(7079, size);
             Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
             Assert.Equal("", errorMessage);
@@ -81,13 +81,36 @@ namespace PluginTest
         [Fact]
         public void GetSignatureIncorrectSizeTest()
         {
-            const string fileCrc = "22CA4444";
+            const string fileCrc = "22ca4444";
             var result = romcenterPlugin.GetSignature(@"data\bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("a78", format.ToLowerInvariant());
+            Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.StartsWith("rom size stored in header", comment.ToLowerInvariant());
             Assert.Equal("", errorMessage);
             Assert.Equal(fileCrc, result);
         }
+
+        /// <summary>
+        /// Check if rom file is released after operations
+        /// </summary>
+        [Fact]
+        public void FileLockedTest()
+        {
+            //copy file
+            var tempRom = @"data\rom.bin";
+            if (File.Exists(tempRom))
+            {
+                File.Delete(tempRom);
+            }
+            File.Copy(@"data\[22CA4444] Color Grid.a78", tempRom);
+            const string fileCrc = "fc051004";
+            var result = romcenterPlugin.GetSignature(tempRom, fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal(".a78", format.ToLowerInvariant());
+            Assert.Equal("22ca4444", result);
+
+            //delete file
+            File.Delete(tempRom);
+        }
+
     }
 }

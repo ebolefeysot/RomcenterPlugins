@@ -1,4 +1,4 @@
-namespace A7800;
+namespace a7800;
 
 public class RomFormat
 {

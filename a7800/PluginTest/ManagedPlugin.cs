@@ -1,6 +1,4 @@
-﻿using A7800;
-
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace PluginTest
 {
@@ -109,30 +107,33 @@ namespace PluginTest
         {
             parameters ??= [];
 
-            Type? t = assembly.DefinedTypes.ToList().FirstOrDefault(t => string.Equals(
-                t.Name.ToLowerInvariant(),
-                nameof(RcPlugin).ToLowerInvariant(),
-                StringComparison.Ordinal));
+            //we want to create RcPlugin instance from the assembly, but we don't know the RcPlugin class in this project
+            //and we don't want to reference plugin project just to get the RcPlugin class.
+            //Instead, we use the interface and we get the type which implement IRomcenterPlugin
+            Type? t = assembly.DefinedTypes.ToList().FirstOrDefault(t =>
+                (t.ImplementedInterfaces.Any(i => i.Name == nameof(IRomcenterPlugin))));
 
             if (t == null)
             {
                 return (null, null);
             }
 
+            //Create an instance to invoke the method
             var instance = Activator.CreateInstance(t);
             if (instance == null)
             {
                 return (null, null);
             }
 
+            //Get the method
             var methodInfo = t.GetMethod(methodName);
-
 
             if (methodInfo == null)
             {
                 return (null, null);
             }
 
+            //invoke
             var invoke = methodInfo.Invoke(instance, parameters);
             return (invoke, parameters);
         }

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "A7800", "A7800\A7800.csproj", "{B5BBE1EB-C0B2-4F27-8341-CEC16A8D11AD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginTest", "PluginTest\PluginTest.csproj", "{2C4E8E92-74EB-4F6B-9F2A-D11DE0D29828}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "a7800", "a7800\a7800.csproj", "{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B5BBE1EB-C0B2-4F27-8341-CEC16A8D11AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5BBE1EB-C0B2-4F27-8341-CEC16A8D11AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5BBE1EB-C0B2-4F27-8341-CEC16A8D11AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5BBE1EB-C0B2-4F27-8341-CEC16A8D11AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C4E8E92-74EB-4F6B-9F2A-D11DE0D29828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C4E8E92-74EB-4F6B-9F2A-D11DE0D29828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C4E8E92-74EB-4F6B-9F2A-D11DE0D29828}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C4E8E92-74EB-4F6B-9F2A-D11DE0D29828}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

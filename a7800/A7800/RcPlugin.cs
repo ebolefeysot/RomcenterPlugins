@@ -8,9 +8,11 @@
 
 //The main function (GetSignature) calculates a signature (crc...) of a rom given in parameters.
 
-using Force.Crc32;
+using System;
+using System.IO;
+using System.Linq;
 
-namespace A7800;
+namespace a7800;
 
 public class RcPlugin : IRomcenterPlugin
 {
@@ -30,15 +32,22 @@ public class RcPlugin : IRomcenterPlugin
         out string errorMessage)
     {
         var fs = new FileStream(filename, FileMode.Open);
-        var romFormat = GetHeaderFormat(fs);
+        try
+        {
+            var romFormat = GetHeaderFormat(fs);
 
-        format = romFormat.Type.ToString();
-        size = romFormat.RomSizeInBytes;
-        comment = romFormat.Comment;
-        errorMessage = romFormat.Error;
+            format = romFormat.Type == FormatEnum.none ? "" : "." + romFormat.Type;
+            size = romFormat.RomSizeInBytes;
+            comment = romFormat.Comment;
+            errorMessage = romFormat.Error;
 
-        var hash = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
-        return hash;
+            var hash = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
+            return hash;
+        }
+        finally
+        {
+            fs.Close();
+        }
     }
 
     public string GetAuthor()
@@ -108,6 +117,7 @@ public class RcPlugin : IRomcenterPlugin
         var br = new BinaryReader(stream);
 
         format.HeaderVersion = br.ReadByte();
+        format.Type = FormatEnum.bin;
 
         var magicString = new string(br.ReadChars(9)).ToUpper();
         if (magicString == headerText)
@@ -124,6 +134,7 @@ public class RcPlugin : IRomcenterPlugin
             if (format.RomSizeInBytes < RomMinSizeInBytes)
             {
                 format.Comment = $"Rom is too small ({format.RomSizeInBytes} bytes), must be {RomMinSizeInBytes} bytes or more";
+                format.Type = FormatEnum.none;
             }
             //check header size match rom size
             else if (format.RomSizeInBytes != format.HeaderRomSizeInBytes)
@@ -134,7 +145,6 @@ public class RcPlugin : IRomcenterPlugin
         else
         {
             // No header
-            format.Type = FormatEnum.bin;
             format.HeaderSizeInBytes = 0;
             format.RomSizeInBytes = (int)stream.Length;
         }
@@ -143,6 +153,7 @@ public class RcPlugin : IRomcenterPlugin
         if (format.RomSizeInBytes % 1024 != 0)
         {
             format.Comment = "Not an atari 7800 rom (invalid size)";
+            format.Type = FormatEnum.none;
             return format;
         }
 
@@ -165,10 +176,18 @@ public class RcPlugin : IRomcenterPlugin
         fileStream.Read(fileBuf, 0, length);
 
         //calculate crc32
-        var crcInt = Crc32Algorithm.Compute(fileBuf);
+        var hashAlgorithm = new Crc32HashAlgorithm();
+
+        // get array of 4 8 bits crc values
+        byte[] crc = hashAlgorithm.ComputeHash(fileBuf);
+
+        // convert to a 32bits hex value
+        return Crc32HashAlgorithm.ToHex(crc);
+
+        //var crcInt = new Crc32().CalculateHash(fileStream, offset, length fileBuf);
 
         //format result
-        var crc = BitConverter.ToString(BitConverter.GetBytes(crcInt).Reverse().ToArray());
-        return crc.Replace("-", "");
+        //var crc = BitConverter.ToString(BitConverter.GetBytes(crcInt).Reverse().ToArray());
+        //return crc.Replace("-", "");
     }
 }
