@@ -1,4 +1,4 @@
-namespace a7800;
+namespace PluginBase;
 
 public interface IRomcenterPlugin
 {

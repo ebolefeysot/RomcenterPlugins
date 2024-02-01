@@ -29,19 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\bad size.a78">
+    <None Update="A7800\Data\bad size.a78">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\not a rom.bin">
+    <None Update="A7800\Data\not a rom.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\[22CA4444] Color Grid.a78">
+    <None Update="A7800\Data\[22CA4444] Color Grid.a78">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Data\[22CA4444] Color Grid.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\[CEDE74C9] Dig Dug.bin">
+    <None Update="A7800\Data\[22CA4444] Color Grid.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

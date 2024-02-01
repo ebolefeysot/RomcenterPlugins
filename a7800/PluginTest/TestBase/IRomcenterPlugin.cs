@@ -1,4 +1,4 @@
-namespace PluginTest
+namespace PluginTest.TestBase
 {
     public interface IRomcenterPlugin
     {

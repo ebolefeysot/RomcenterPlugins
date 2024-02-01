@@ -8,6 +8,7 @@
 
 //The main function (GetSignature) calculates a signature (crc...) of a rom given in parameters.
 
+using PluginBase;
 using System;
 using System.IO;
 using System.Linq;
@@ -36,7 +37,7 @@ public class RcPlugin : IRomcenterPlugin
         {
             var romFormat = GetHeaderFormat(fs);
 
-            format = romFormat.Type == FormatEnum.none ? "" : "." + romFormat.Type;
+            format = romFormat.Type == FormatEnum.None ? "" : "." + romFormat.Type.ToString().ToLowerInvariant();
             size = romFormat.RomSizeInBytes;
             comment = romFormat.Comment;
             errorMessage = romFormat.Error;
@@ -117,12 +118,12 @@ public class RcPlugin : IRomcenterPlugin
         var br = new BinaryReader(stream);
 
         format.HeaderVersion = br.ReadByte();
-        format.Type = FormatEnum.bin;
+        format.Type = FormatEnum.Bin;
 
         var magicString = new string(br.ReadChars(9)).ToUpper();
         if (magicString == headerText)
         {
-            format.Type = FormatEnum.a78;
+            format.Type = FormatEnum.A78;
             format.HeaderSizeInBytes = headerSizeInBytes;
             format.RomSizeInBytes = (int)stream.Length - headerSizeInBytes;
 
@@ -134,7 +135,7 @@ public class RcPlugin : IRomcenterPlugin
             if (format.RomSizeInBytes < RomMinSizeInBytes)
             {
                 format.Comment = $"Rom is too small ({format.RomSizeInBytes} bytes), must be {RomMinSizeInBytes} bytes or more";
-                format.Type = FormatEnum.none;
+                format.Type = FormatEnum.None;
             }
             //check header size match rom size
             else if (format.RomSizeInBytes != format.HeaderRomSizeInBytes)
@@ -153,7 +154,7 @@ public class RcPlugin : IRomcenterPlugin
         if (format.RomSizeInBytes % 1024 != 0)
         {
             format.Comment = "Not an atari 7800 rom (invalid size)";
-            format.Type = FormatEnum.none;
+            format.Type = FormatEnum.None;
             return format;
         }
 

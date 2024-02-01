@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace PluginTest
+namespace PluginTest.TestBase
 {
     /// <summary>
     /// A class to use an external managed plugin library
@@ -111,7 +111,7 @@ namespace PluginTest
             //and we don't want to reference plugin project just to get the RcPlugin class.
             //Instead, we use the interface and we get the type which implement IRomcenterPlugin
             Type? t = assembly.DefinedTypes.ToList().FirstOrDefault(t =>
-                (t.ImplementedInterfaces.Any(i => i.Name == nameof(IRomcenterPlugin))));
+                t.ImplementedInterfaces.Any(i => i.Name == nameof(IRomcenterPlugin)));
 
             if (t == null)
             {

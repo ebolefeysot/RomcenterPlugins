@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginTest", "PluginTest\Pl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "a7800", "a7800\a7800.csproj", "{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PluginBase", "PluginBase\PluginBase.shproj", "{F33287AB-A927-430B-ABB5-F7D4EDDE3274}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,5 +29,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0DEA2C7-3BC1-4004-B402-8599B7B87E79}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PluginBase\PluginBase.projitems*{53748c60-6ba7-4eaf-8fa4-a305c0fe2d2d}*SharedItemsImports = 4
+		PluginBase\PluginBase.projitems*{f33287ab-a927-430b-abb5-f7d4edde3274}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

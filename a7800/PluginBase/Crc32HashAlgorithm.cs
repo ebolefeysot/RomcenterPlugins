@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace a7800;
+namespace PluginBase;
 
 /// <summary>
 /// The crc 32 algo.

@@ -1,7 +1,14 @@
-namespace PluginTest
+using PluginTest.TestBase;
+
+namespace PluginTest.A7800
 {
-    public class PluginTests
+    public class A7800Tests
     {
+        /// <summary>
+        /// Base path for test files
+        /// </summary>
+        private const string DataPath = @"a7800\data\";
+
         private const string DllType = "romcenter signature calculator"; //Identification string, do not change
         private const string InterfaceVersion = "4.0"; //version of romcenter plugin internal interface
 
@@ -14,7 +21,7 @@ namespace PluginTest
 
         private readonly IRomcenterPlugin romcenterPlugin;
 
-        public PluginTests()
+        public A7800Tests()
         {
             var pluginPath = "A7800.dll";
             romcenterPlugin = new ManagedPlugin(pluginPath);
@@ -40,7 +47,7 @@ namespace PluginTest
         public void GetSignatureRawTest()
         {
             const string fileCrc = "22ca4444";
-            var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".bin", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.Equal("", comment);
@@ -52,7 +59,7 @@ namespace PluginTest
         public void GetSignatureHeaderTest()
         {
             const string fileCrc = "FC051004";
-            var result = romcenterPlugin.GetSignature(@"data\[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.Equal("", comment);
@@ -67,7 +74,7 @@ namespace PluginTest
         public void GetSignatureNotARomTest()
         {
             const string fileCrc = "3bcbd64d";
-            var result = romcenterPlugin.GetSignature(@"data\not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal("", format.ToLowerInvariant());
             Assert.Equal(7079, size);
             Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
@@ -82,7 +89,7 @@ namespace PluginTest
         public void GetSignatureIncorrectSizeTest()
         {
             const string fileCrc = "22ca4444";
-            var result = romcenterPlugin.GetSignature(@"data\bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            var result = romcenterPlugin.GetSignature($"{DataPath}bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.StartsWith("rom size stored in header", comment.ToLowerInvariant());
@@ -97,14 +104,14 @@ namespace PluginTest
         public void FileLockedTest()
         {
             //copy file
-            var tempRom = @"data\rom.bin";
+            var tempRom = $"{DataPath}rom.bin";
             if (File.Exists(tempRom))
             {
                 File.Delete(tempRom);
             }
-            File.Copy(@"data\[22CA4444] Color Grid.a78", tempRom);
+            File.Copy($"{DataPath}[22CA4444] Color Grid.a78", tempRom);
             const string fileCrc = "fc051004";
-            var result = romcenterPlugin.GetSignature(tempRom, fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            var result = romcenterPlugin.GetSignature(tempRom, fileCrc, out var format, out _, out _, out _);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal("22ca4444", result);
 
