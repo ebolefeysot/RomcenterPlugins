@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "a7800", "a7800\a7800.csproj
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PluginBase", "PluginBase\PluginBase.shproj", "{F33287AB-A927-430B-ABB5-F7D4EDDE3274}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gbx", "gbx\gbx.csproj", "{7E4FAE61-25DC-48E1-A68A-1E91D9E1B62E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SegaGenesis", "SegaGenesis\SegaGenesis.csproj", "{0A1474EF-EC6E-48D5-AD5C-BCE20553D058}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,14 @@ Global
 		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53748C60-6BA7-4EAF-8FA4-A305C0FE2D2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4FAE61-25DC-48E1-A68A-1E91D9E1B62E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4FAE61-25DC-48E1-A68A-1E91D9E1B62E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4FAE61-25DC-48E1-A68A-1E91D9E1B62E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4FAE61-25DC-48E1-A68A-1E91D9E1B62E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A1474EF-EC6E-48D5-AD5C-BCE20553D058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A1474EF-EC6E-48D5-AD5C-BCE20553D058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A1474EF-EC6E-48D5-AD5C-BCE20553D058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A1474EF-EC6E-48D5-AD5C-BCE20553D058}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -31,7 +43,9 @@ Global
 		SolutionGuid = {D0DEA2C7-3BC1-4004-B402-8599B7B87E79}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PluginBase\PluginBase.projitems*{0a1474ef-ec6e-48d5-ad5c-bce20553d058}*SharedItemsImports = 4
 		PluginBase\PluginBase.projitems*{53748c60-6ba7-4eaf-8fa4-a305c0fe2d2d}*SharedItemsImports = 4
+		PluginBase\PluginBase.projitems*{7e4fae61-25dc-48e1-a68a-1e91d9e1b62e}*SharedItemsImports = 4
 		PluginBase\PluginBase.projitems*{f33287ab-a927-430b-abb5-f7d4edde3274}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

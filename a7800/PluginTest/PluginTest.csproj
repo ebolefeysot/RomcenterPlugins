@@ -13,6 +13,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net40" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,20 +30,73 @@
 
   <ItemGroup>
     <ProjectReference Include="..\a7800\a7800.csproj" />
+    <ProjectReference Include="..\gbx\gbx.csproj" />
+    <ProjectReference Include="..\SegaGenesis\SegaGenesis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="A7800\Data\bad size.a78">
+    <None Update="a7800\Data\bad size.a78">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="A7800\Data\not a rom.bin">
+    <None Update="a7800\Data\not a rom.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="A7800\Data\[22CA4444] Color Grid.a78">
+    <None Update="a7800\Data\[22CA4444] Color Grid.a78">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="A7800\Data\[22CA4444] Color Grid.bin">
+    <None Update="a7800\Data\[22CA4444] Color Grid.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%281766e558%29 3-D Ultra Pinball - Thrillride %28USA%29_gbc.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%2841884e46%29 gbc_bios.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%285009215F%29 Bad size.gb.bak">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%285009215F%29 Tennis %28World%29_gb.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%2859C8598E%29 BIOS Game Boy_gb.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%2859C8598E%29 gb_bios.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%2869989152%29 Tetris DX %28World%29_sgb.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\%28d923d90d%29 Bad size.gb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="gbx\Data\not a rom.gbc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%283F888CF4%29 BIOS Genesis_bin.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%2853734E3A%29 Doom 32x_32x.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%2853734E3A%29 Doom 32x_bin.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%285C12EAE8%29 BIOS 32X.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%28AA8DC2D8%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%28F9394E97%29 Sonic_bin.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%28F9394E97%29 Sonic_md.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%28F9394E97%29 Sonic_smd.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
