@@ -32,6 +32,12 @@ public class RcPlugin : IRomcenterPlugin
     public string GetSignature(string filename, string zipcrc, out string format, out long size, out string comment,
         out string errorMessage)
     {
+        format = "";
+        size = 0;
+        comment = "";
+        errorMessage = "";
+        zipcrc = zipcrc?.ToLowerInvariant() ?? "";
+
         var fs = new FileStream(filename, FileMode.Open);
         try
         {

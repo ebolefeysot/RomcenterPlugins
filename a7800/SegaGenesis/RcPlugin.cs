@@ -35,7 +35,7 @@ public class RcPlugin : IRomcenterPlugin
         size = 0;
         comment = "";
         errorMessage = "";
-        zipcrc = zipcrc.ToLowerInvariant();
+        zipcrc = zipcrc?.ToLowerInvariant() ?? "";
 
         try
         {

@@ -92,7 +92,7 @@ public class RcPlugin : IRomcenterPlugin
         const int sgbFlag = 0x146;
         const int romSizeOffset = 0x148;
         const int headerSize = 0x0;
-        const string logo = "6666EDCE";
+        const string logo = "CEED6666";
         const long romMinSizeInBytes = 32768; //min size of the core rom
 
         var totalStreamSize = stream.Length;
