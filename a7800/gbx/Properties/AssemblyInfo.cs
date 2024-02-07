@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("gbx")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("gameboy")]
+[assembly: AssemblyDescription("Gameboy romcenter signature plugin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("gbx")]
+[assembly: AssemblyCompany("Romcenter")]
+[assembly: AssemblyProduct("gameboy")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
