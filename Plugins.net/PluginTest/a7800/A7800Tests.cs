@@ -46,19 +46,19 @@ namespace PluginTest.A7800
         [Fact]
         public void GetSignatureRawTest()
         {
-            const string fileCrc = "22ca4444";
+            const string? fileCrc = "11111111";
             var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".bin", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.Equal("", comment);
             Assert.Equal("", errorMessage);
-            Assert.Equal(fileCrc, result);
+            Assert.Equal(fileCrc, result); //zip crc should be used
         }
 
         [Fact]
         public void GetSignatureHeaderTest()
         {
-            const string fileCrc = "FC051004";
+            const string? fileCrc = "FC051004";
             var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
@@ -73,13 +73,43 @@ namespace PluginTest.A7800
         [Fact]
         public void GetSignatureNotARomTest()
         {
-            const string fileCrc = "3bcbd64d";
+            const string? fileCrc = "11111111";
             var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal("", format.ToLowerInvariant());
             Assert.Equal(7079, size);
             Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
             Assert.Equal("", errorMessage);
-            Assert.Equal(fileCrc, result);
+            Assert.Equal(fileCrc, result); //zip crc should be used
+        }
+
+        /// <summary>
+        /// ZipCrc not sent (unzipped rom for example). It should be calculated.
+        /// </summary>
+        [Fact]
+        public void EmptyZipCrcTest()
+        {
+            const string? fileCrc = "";
+            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("", format.ToLowerInvariant());
+            Assert.Equal(7079, size);
+            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
+            Assert.Equal("", errorMessage);
+            Assert.Equal("3bcbd64d", result);
+        }
+
+        /// <summary>
+        /// ZipCrc not sent (unzipped rom for example). It should be calculated.
+        /// </summary>
+        [Fact]
+        public void NullZipCrcTest()
+        {
+            const string? fileCrc = null;
+            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
+            Assert.Equal("", format.ToLowerInvariant());
+            Assert.Equal(7079, size);
+            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
+            Assert.Equal("", errorMessage);
+            Assert.Equal("3bcbd64d", result);
         }
 
         /// <summary>
@@ -88,13 +118,13 @@ namespace PluginTest.A7800
         [Fact]
         public void GetSignatureIncorrectSizeTest()
         {
-            const string fileCrc = "22ca4444";
+            const string? fileCrc = "11111111";
             var result = romcenterPlugin.GetSignature($"{DataPath}bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal(4 * 1024, size);
             Assert.StartsWith("rom size stored in header", comment.ToLowerInvariant());
             Assert.Equal("", errorMessage);
-            Assert.Equal(fileCrc, result);
+            Assert.Equal("22ca4444", result);
         }
 
         /// <summary>
@@ -110,7 +140,7 @@ namespace PluginTest.A7800
                 File.Delete(tempRom);
             }
             File.Copy($"{DataPath}[22CA4444] Color Grid.a78", tempRom);
-            const string fileCrc = "fc051004";
+            const string? fileCrc = "fc051004";
             var result = romcenterPlugin.GetSignature(tempRom, fileCrc, out var format, out _, out _, out _);
             Assert.Equal(".a78", format.ToLowerInvariant());
             Assert.Equal("22ca4444", result);

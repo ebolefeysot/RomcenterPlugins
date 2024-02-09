@@ -27,7 +27,7 @@ namespace PluginTest.TestBase
             }
         }
 
-        public string? GetSignature(string filename, string zipcrc, out string format, out long size, out string comment, out string errorMessage)
+        public string? GetSignature(string filename, string? zipcrc, out string format, out long size, out string comment, out string errorMessage)
         {
             //init
             format = "";

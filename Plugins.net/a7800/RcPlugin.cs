@@ -48,6 +48,15 @@ public class RcPlugin : IRomcenterPlugin
             comment = romFormat.Comment;
             errorMessage = romFormat.Error;
 
+            if (romFormat.HeaderSizeInBytes == 0)
+            {
+                if (string.IsNullOrEmpty(zipcrc))
+                {
+                    zipcrc = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
+                }
+                return zipcrc;
+            }
+
             var hash = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
             return hash;
         }
@@ -190,11 +199,5 @@ public class RcPlugin : IRomcenterPlugin
 
         // convert to a 32bits hex value
         return Crc32HashAlgorithm.ToHex(crc);
-
-        //var crcInt = new Crc32().CalculateHash(fileStream, offset, length fileBuf);
-
-        //format result
-        //var crc = BitConverter.ToString(BitConverter.GetBytes(crcInt).Reverse().ToArray());
-        //return crc.Replace("-", "");
     }
 }

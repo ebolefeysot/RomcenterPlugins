@@ -2,7 +2,7 @@ namespace PluginTest.TestBase
 {
     public interface IRomcenterPlugin
     {
-        string? GetSignature(string filename, string zipcrc, out string format, out long size, out string comment, out string errorMessage);
+        string? GetSignature(string filename, string? zipcrc, out string format, out long size, out string comment, out string errorMessage);
 
         string? GetAuthor();
 

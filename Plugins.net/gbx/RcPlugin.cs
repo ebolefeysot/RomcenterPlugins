@@ -49,6 +49,15 @@ public class RcPlugin : IRomcenterPlugin
                 comment = romFormat.Comment;
                 errorMessage = romFormat.Error;
 
+                if (romFormat.HeaderSizeInBytes == 0)
+                {
+                    if (string.IsNullOrEmpty(zipcrc))
+                    {
+                        zipcrc = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
+                    }
+                    return zipcrc;
+                }
+
                 var hash = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
                 return hash;
             }
@@ -79,7 +88,8 @@ public class RcPlugin : IRomcenterPlugin
     private static void GetHeaderFormat(Stream stream, RomFormat format)
     {
         //https://gbdev.io/pandocs/The_Cartridge_Header.html
-        //Each cartridge contains a header, located at the address range $0100—$014F
+        //Each cartridge contains a header, located at the address range $0100—$014F. It is part of the rom.
+        //No additional header to skip
 
         //format available: .gb, .gbc, .sgb
         //0104 - 0133 : Nintendo Logo: CE ED 66 66 CC 0D 00 0B 03 73 00 83 00 0C 00 0D...
@@ -112,13 +122,13 @@ public class RcPlugin : IRomcenterPlugin
         var result = Helper.GetHexString(br, headerStart, 4);
         if (result != logo)
         {
-            format.RomSizeInBytes = (int)stream.Length;
             format.Comment = "Not an gameboy rom (missing header)";
             format.RomSizeInBytes = (int)stream.Length;
             return;
         }
 
         format.RomSizeInBytes = (int)(totalStreamSize - headerSize);
+        format.HeaderSizeInBytes = headerSize;
         format.Type = FormatEnum.Gb;
         byte cgb = Helper.GetByte(br, cgbFlag);
         if (cgb is 0x80 or 0xC0)

@@ -67,6 +67,10 @@ public class RcPlugin : IRomcenterPlugin
                         hash = GetCrc32(stream2, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
                         break;
                     default:
+                        if (string.IsNullOrEmpty(zipcrc))
+                        {
+                            zipcrc = hash = GetCrc32(fs, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
+                        }
                         hash = zipcrc;
                         break;
                 }
