@@ -21,6 +21,20 @@ namespace PluginBase
             return result;
         }
 
+        /// <summary>
+        /// Return binary content as string.
+        /// </summary>
+        /// <param name="br">Specify the encoding (ascii...) when creating BinaryReader</param>
+        /// <param name="offset"></param>
+        /// <param name="length">Number of char</param>
+        /// <returns></returns>
+        internal static string GetString(BinaryReader br, int offset, int length)
+        {
+            br.BaseStream.Position = offset;
+            var chars = br.ReadChars(length).ToArray();
+            return new string(chars);
+        }
+
         public static byte GetByte(BinaryReader br, int offset)
         {
             //advance to offset
@@ -90,6 +104,12 @@ namespace PluginBase
             uint b = BitConverter.ToUInt32([bytes[3], bytes[2], bytes[1], bytes[0]], 0);
 
             return (int)b;
+        }
+
+        internal static void CreateDummyFile(string fileName, long length)
+        {
+            using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
+            fileStream.SetLength(length);
         }
     }
 }

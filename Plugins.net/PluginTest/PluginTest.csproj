@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\a7800\a7800.csproj" />
     <ProjectReference Include="..\gbx\gbx.csproj" />
+    <ProjectReference Include="..\nes\nes.csproj" />
     <ProjectReference Include="..\SegaGenesis\SegaGenesis.csproj" />
   </ItemGroup>
 
@@ -74,6 +75,27 @@
     <None Update="gbx\Data\not a rom.gbc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="nes\Data\%285E607DCF%29 BIOS fds.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%2877D2055F%29Tin Choi.unf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%28AA8DC2D8%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%28BCACBBF4%29 ms nes2.nes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%28BCACBBF4%29 ms.ffe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%28BCACBBF4%29 ms.nes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="nes\Data\%28BCACBBF4%29 ms.unf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SegaGenesis\Data\%283F888CF4%29 BIOS Genesis_bin.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -99,5 +121,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Import Project="..\PluginBase\PluginBase.projitems" Label="Shared" />
 
 </Project>
