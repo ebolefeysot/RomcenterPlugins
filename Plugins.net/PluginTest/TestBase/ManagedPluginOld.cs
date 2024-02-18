@@ -1,12 +1,11 @@
-﻿using PluginLib;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace PluginTest.TestBase
 {
     /// <summary>
     /// A class to use an external managed plugin library
     /// </summary>
-    internal class ManagedPlugin : IRomcenterPlugin
+    internal class ManagedPluginOld : IRomcenterPluginOld
     {
         private readonly Assembly assembly;
 
@@ -14,7 +13,7 @@ namespace PluginTest.TestBase
         /// Create an instance linked to an external managed plugin library.
         /// </summary>
         /// <param name="pluginLibraryPath"></param>
-        public ManagedPlugin(string pluginLibraryPath)
+        public ManagedPluginOld(string pluginLibraryPath)
         {
             try
             {
@@ -28,10 +27,15 @@ namespace PluginTest.TestBase
             }
         }
 
-        public PluginResult? GetSignature(Stream romStream, string? zipCrc)
+        public string? GetSignature(string filename, string? zipcrc, out string format, out long size, out string comment, out string errorMessage)
         {
             //init
-            var parameters = new object?[] { romStream, zipCrc ?? "" };
+            format = "";
+            size = 0;
+            comment = "";
+            errorMessage = "";
+
+            var parameters = new object?[] { filename, zipcrc, null, null, null, null };
 
             var (result, param) = GetMethodResult(nameof(GetSignature), parameters);
 
@@ -40,7 +44,12 @@ namespace PluginTest.TestBase
                 return null;
             }
 
-            return (PluginResult)result;
+            format = (string)(param[2] ?? "");
+            size = (long)(param[3] ?? 0);
+            comment = (string)(param[4] ?? "");
+            errorMessage = (string)(param[5] ?? "");
+
+            return (string)result;
         }
 
         public string GetAuthor()
@@ -102,7 +111,7 @@ namespace PluginTest.TestBase
             //and we don't want to reference plugin project just to get the RcPlugin class.
             //Instead, we use the interface and we get the type which implement IRomcenterPlugin
             Type? t = assembly.DefinedTypes.ToList().FirstOrDefault(t =>
-                t.ImplementedInterfaces.Any(i => i.Name == nameof(IRomcenterPlugin)));
+                t.ImplementedInterfaces.Any(i => i.Name == nameof(IRomcenterPluginOld)));
 
             if (t == null)
             {

@@ -1,10 +1,13 @@
-namespace PluginTest.TestBase
+using System.IO;
+
+namespace PluginLib
 {
+
     public interface IRomcenterPlugin
     {
-        string? GetSignature(string filename, string? zipcrc, out string format, out long size, out string comment, out string errorMessage);
+        PluginResult? GetSignature(Stream romStream, string? zipCrc);
 
-        string? GetAuthor();
+        string GetAuthor();
 
         string GetDescription();
 

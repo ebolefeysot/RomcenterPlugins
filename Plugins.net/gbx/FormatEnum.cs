@@ -5,5 +5,7 @@ public enum FormatEnum
     None,
     Gb,
     Gbc,
-    Sgb
+    Sgb,
+    TooSmall,
+    TooBig
 }

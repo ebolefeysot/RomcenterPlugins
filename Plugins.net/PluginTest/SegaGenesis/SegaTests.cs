@@ -17,127 +17,135 @@ namespace PluginTest.SegaGenesis
         public void GetSignatureBinTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(F9394E97) Sonic_bin.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".gen", format.ToLowerInvariant());
-            Assert.Equal(512 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal(fileCrc.ToLowerInvariant(), result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}(F9394E97) Sonic_bin.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".gen", result.Extension);
+            Assert.Equal("Genesis", result.Format);
+            Assert.Equal(512 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         [Fact]
         public void GetSignatureMdTest()
         {
-            const string? fileCrc = "b2CCC6CA";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(F9394E97) Sonic_md.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".gen", format.ToLowerInvariant());
-            Assert.Equal(512 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("f9394e97", result);
+            const string? fileCrc = "11111111";
+            var fs = new FileStream($"{DataPath}(F9394E97) Sonic_md.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".gen", result.Extension);
+            Assert.Equal("Mega Drive", result.Format);
+            Assert.Equal(512 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal("f9394e97", result.Signature);
         }
 
         [Fact]
         public void GetSignatureSmdTest()
         {
-            const string? fileCrc = "9e514C6e";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(F9394E97) Sonic_smd.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".smd", format.ToLowerInvariant());
-            Assert.Equal(512 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("f9394e97", result);
+            const string? fileCrc = "11111111";
+            var fs = new FileStream($"{DataPath}(F9394E97) Sonic_smd.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".smd", result.Extension);
+            Assert.Equal("Super Magic Drive", result.Format);
+            Assert.Equal(512 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal("f9394e97", result.Signature);
         }
 
         [Fact]
         public void GetSignature32xTest()
         {
-            const string? fileCrc = "ab6e378d";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(53734E3A) Doom 32x_32x.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".32x", format.ToLowerInvariant());
-            Assert.Equal(3 * 1024 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("53734e3a", result);
+            const string? fileCrc = "11111111";
+            var fs = new FileStream($"{DataPath}(53734E3A) Doom 32x_32x.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".32x", result.Extension);
+            Assert.Equal("32X", result.Format);
+            Assert.Equal(3 * 1024 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal("53734e3a", result.Signature);
         }
 
         [Fact]
         public void GetSignature32xBinTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(53734E3A) Doom 32x_bin.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".gen", format.ToLowerInvariant());
-            Assert.Equal(3 * 1024 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal(fileCrc, result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}(53734E3A) Doom 32x_bin.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".gen", result.Extension);
+            Assert.Equal(3 * 1024 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         [Fact]
         public void GetSignatureBiosTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(3F888CF4) BIOS Genesis_bin.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(".gen", format.ToLowerInvariant());
-            Assert.Equal(2 * 1024, size);
-            Assert.StartsWith("", comment);
-            Assert.Equal(fileCrc, result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}(3F888CF4) BIOS Genesis_bin.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal(2 * 1024, result.Size);
+            Assert.StartsWith("Rom is too small", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         [Fact]
         public void GetSignatureBios32xTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(5C12EAE8) BIOS 32X.md", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(256, size);
-            Assert.StartsWith("Too small for a game", comment);
-            Assert.Equal(fileCrc, result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}(5C12EAE8) BIOS 32X.md", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal(256, result.Size);
+            Assert.StartsWith("Rom is too small", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         [Fact]
         public void GetSignatureUnknownTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(AA8DC2D8) unknown.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(128 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal(fileCrc, result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}(AA8DC2D8) unknown.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal(128 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         /// <summary>
         /// ZipCrc not sent (unzipped rom for example). It should be calculated.
         /// </summary>
-        [Fact]
-        public void EmptyZipCrcTest()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void EmptyZipCrcTest(string? fileCrc)
         {
-            const string? fileCrc = "";
-            var result = romcenterPlugin.GetSignature($"{DataPath}(AA8DC2D8) unknown.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(128 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("aa8dc2d8", result);
-        }
-
-        /// <summary>
-        /// ZipCrc not sent (unzipped rom for example). It should be calculated.
-        /// </summary>
-        [Fact]
-        public void NullZipCrcTest()
-        {
-            const string? fileCrc = null;
-            var result = romcenterPlugin.GetSignature($"{DataPath}(AA8DC2D8) unknown.rom", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(128 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("aa8dc2d8", result);
-
+            var fs = new FileStream($"{DataPath}(AA8DC2D8) unknown.rom", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal("", result.Format);
+            Assert.Equal(128 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal("aa8dc2d8", result.Signature);
         }
     }
 }

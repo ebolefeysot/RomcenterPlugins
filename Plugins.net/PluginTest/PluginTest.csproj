@@ -32,6 +32,7 @@
     <ProjectReference Include="..\a7800\a7800.csproj" />
     <ProjectReference Include="..\gbx\gbx.csproj" />
     <ProjectReference Include="..\nes\nes.csproj" />
+    <ProjectReference Include="..\PluginLib\PluginLib.csproj" />
     <ProjectReference Include="..\SegaGenesis\SegaGenesis.csproj" />
   </ItemGroup>
 
@@ -121,7 +122,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <Import Project="..\PluginBase\PluginBase.projitems" Label="Shared" />
 
 </Project>

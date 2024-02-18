@@ -12,5 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Crc32HashAlgorithm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IRomcenterPlugin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IRomcenterPluginNew.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PluginResult.cs" />
   </ItemGroup>
 </Project>

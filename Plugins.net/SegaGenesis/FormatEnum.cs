@@ -3,8 +3,10 @@ namespace SegaGenesis;
 public enum FormatEnum
 {
     None,
-    gen,
-    smd,
+    Gen,
+    Smd,
     _32x,
-    md //mega drive, rom is interleaved and swapped
+    Md, //mega drive, rom is interleaved and swapped
+    TooBig,
+    TooSmall
 }

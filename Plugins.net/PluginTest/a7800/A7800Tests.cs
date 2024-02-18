@@ -1,3 +1,5 @@
+
+using PluginLib;
 using PluginTest.TestBase;
 
 namespace PluginTest.A7800
@@ -10,7 +12,7 @@ namespace PluginTest.A7800
         private const string DataPath = @"a7800\data\";
 
         private const string DllType = "romcenter signature calculator"; //Identification string, do not change
-        private const string InterfaceVersion = "4.0"; //version of romcenter plugin internal interface
+        private const string InterfaceVersion = "4.2"; //version of romcenter plugin internal interface
 
         private const string PlugInName = "Atari 7800 crc calculator"; //full name of plug in
         private const string Author = "Eric Bole-Feysot"; //Author name
@@ -19,7 +21,7 @@ namespace PluginTest.A7800
         private const string Email = "eric@romcenter.com"; //Email of plug in support
         private const string Description = "Atari 7800 crc calculator. Skip the Atari 7800 file header to calculate the crc32. Support a78, bin format.";
 
-        private readonly IRomcenterPlugin romcenterPlugin;
+        private readonly ManagedPlugin romcenterPlugin;
 
         public A7800Tests()
         {
@@ -47,24 +49,30 @@ namespace PluginTest.A7800
         public void GetSignatureRawTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal(".bin", format.ToLowerInvariant());
-            Assert.Equal(4 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("", errorMessage);
-            Assert.Equal(fileCrc, result); //zip crc should be used
+            var fs = new FileStream($"{DataPath}[22CA4444] Color Grid.bin", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(".bin", result.Extension);
+            Assert.Equal("RAW", result.Format);
+            Assert.Equal(4 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         [Fact]
         public void GetSignatureHeaderTest()
         {
-            const string? fileCrc = "FC051004";
-            var result = romcenterPlugin.GetSignature($"{DataPath}[22CA4444] Color Grid.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal(".a78", format.ToLowerInvariant());
-            Assert.Equal(4 * 1024, size);
-            Assert.Equal("", comment);
-            Assert.Equal("", errorMessage);
-            Assert.Equal("22ca4444", result);
+            const string? fileCrc = "11111111";
+            var fs = new FileStream($"{DataPath}[22CA4444] Color Grid.a78", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal(".a78", result.Extension);
+            Assert.Equal("A78", result.Format);
+            Assert.Equal(4 * 1024, result.Size);
+            Assert.Equal("", result.Comment);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("22ca4444", result.Signature);
         }
 
         /// <summary>
@@ -74,27 +82,14 @@ namespace PluginTest.A7800
         public void GetSignatureNotARomTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(7079, size);
-            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
-            Assert.Equal("", errorMessage);
-            Assert.Equal(fileCrc, result); //zip crc should be used
-        }
-
-        /// <summary>
-        /// ZipCrc not sent (unzipped rom for example). It should be calculated.
-        /// </summary>
-        [Fact]
-        public void EmptyZipCrcTest()
-        {
-            const string? fileCrc = "";
-            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(7079, size);
-            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
-            Assert.Equal("", errorMessage);
-            Assert.Equal("3bcbd64d", result);
+            var fs = new FileStream($"{DataPath}not a rom.bin", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.Extension);
+            Assert.Equal(7079, result.Size);
+            Assert.Equal("Not an atari 7800 rom (invalid size)", result.Comment);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal(fileCrc, result.Signature);
         }
 
         /// <summary>
@@ -104,12 +99,14 @@ namespace PluginTest.A7800
         public void NullZipCrcTest()
         {
             const string? fileCrc = null;
-            var result = romcenterPlugin.GetSignature($"{DataPath}not a rom.bin", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal("", format.ToLowerInvariant());
-            Assert.Equal(7079, size);
-            Assert.Equal("not an atari 7800 rom (invalid size)", comment.ToLowerInvariant());
-            Assert.Equal("", errorMessage);
-            Assert.Equal("3bcbd64d", result);
+            var fs = new FileStream($"{DataPath}not a rom.bin", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.Extension);
+            Assert.Equal(7079, result.Size);
+            Assert.Equal("Not an atari 7800 rom (invalid size)", result.Comment);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("3bcbd64d", result.Signature);
         }
 
         /// <summary>
@@ -119,12 +116,14 @@ namespace PluginTest.A7800
         public void GetSignatureIncorrectSizeTest()
         {
             const string? fileCrc = "11111111";
-            var result = romcenterPlugin.GetSignature($"{DataPath}bad size.a78", fileCrc, out var format, out var size, out var comment, out var errorMessage);
-            Assert.Equal(".a78", format.ToLowerInvariant());
-            Assert.Equal(4 * 1024, size);
-            Assert.StartsWith("rom size stored in header", comment.ToLowerInvariant());
-            Assert.Equal("", errorMessage);
-            Assert.Equal("22ca4444", result);
+            var fs = new FileStream($"{DataPath}bad size.a78", FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal(".a78", result.Extension);
+            Assert.Equal(4 * 1024, result.Size);
+            Assert.StartsWith("Rom size stored in header", result.Comment);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("22ca4444", result.Signature);
         }
 
         /// <summary>
@@ -140,14 +139,57 @@ namespace PluginTest.A7800
                 File.Delete(tempRom);
             }
             File.Copy($"{DataPath}[22CA4444] Color Grid.a78", tempRom);
-            const string? fileCrc = "fc051004";
-            var result = romcenterPlugin.GetSignature(tempRom, fileCrc, out var format, out _, out _, out _);
-            Assert.Equal(".a78", format.ToLowerInvariant());
-            Assert.Equal("22ca4444", result);
+            const string? fileCrc = "11111111";
+            var fs = new FileStream(tempRom, FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal(".a78", result.Extension);
+            Assert.Equal("22ca4444", result.Signature);
 
+            fs.Close();
             //delete file
             File.Delete(tempRom);
         }
 
+        /// <summary>
+        /// If file is too big to be a rom, return zip crc, even if it is null
+        /// </summary>
+        [Fact]
+        public void GetSignatureBigFileTest()
+        {
+            var romFile = $"{DataPath}bigRom.bin";
+            Helper.CreateDummyFile(romFile, 2500000);
+
+            const string? fileCrc = "11111111";
+            var fs = new FileStream(romFile, FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal("", result.Format);
+            Assert.Equal(2500000, result.Size);
+            Assert.StartsWith("Rom is too big", result.Comment);
+            Assert.Equal(fileCrc, result.Signature);
+        }
+
+        /// <summary>
+        /// ZipCrc not sent (unzipped rom for example). It should be calculated.
+        /// </summary>
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void EmptyZipCrcTest(string? fileCrc)
+        {
+            var romFile = $"{DataPath}not a rom.bin";
+            var fs = new FileStream(romFile, FileMode.Open, FileAccess.Read);
+            var result = romcenterPlugin.GetSignature(fs, fileCrc);
+            Assert.NotNull(result);
+            Assert.Equal("", result.ErrorMessage);
+            Assert.Equal("", result.Extension);
+            Assert.Equal("", result.Format);
+            Assert.Equal(7079, result.Size);
+            Assert.Equal("Not an atari 7800 rom (invalid size)", result.Comment);
+            Assert.Equal("3bcbd64d", result.Signature);
+        }
     }
 }

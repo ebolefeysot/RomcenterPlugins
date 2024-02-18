@@ -2,12 +2,7 @@ namespace gbx;
 
 public class RomFormat
 {
-    public RomFormat()
-    {
-        Type = FormatEnum.None;
-    }
-
-    public FormatEnum Type { get; set; }
+    public FormatEnum Format { get; set; }
     public string Comment { get; set; } = "";
     public int HeaderSizeInBytes { get; set; }
 
@@ -18,4 +13,5 @@ public class RomFormat
     public string Error { get; set; } = "";
     public int HeaderRomSizeInBytes { get; set; }
     public short HeaderVersion { get; set; }
+    public string FormatTxt { get; set; } = "";
 }
