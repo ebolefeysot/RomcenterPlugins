@@ -4,7 +4,7 @@ using PluginTest.TestBase;
 
 namespace PluginTest.A7800
 {
-    public class A7800Tests
+    public class N64Tests
     {
         /// <summary>
         /// Base path for test files
@@ -23,7 +23,7 @@ namespace PluginTest.A7800
 
         private readonly ManagedPlugin romcenterPlugin;
 
-        public A7800Tests()
+        public N64Tests()
         {
             var pluginPath = "A7800.dll";
             romcenterPlugin = new ManagedPlugin(pluginPath);
@@ -45,51 +45,23 @@ namespace PluginTest.A7800
             Assert.Equal(WebPage, romcenterPlugin.GetWebPage());
         }
 
-        [Fact]
-        public void GetSignatureRawTest()
+        [Theory]
+        [InlineData("[22CA4444] Color Grid.bin", ".bin", "RAW", 4 * 1024, "11111111")]
+        [InlineData("[22CA4444] Color Grid.a78", ".a78", "A78", 4 * 1024, "22ca4444")]
+        [InlineData("not a rom.bin", "", "", 7079, "11111111", "Not an atari 7800 rom")]
+        [InlineData("bad size.a78", ".a78", "A78", 4 * 1024, "22ca4444")]
+        public void GetSignaturesTest(string fileName, string extension, string format, int size, string crc, string comment = "")
         {
             const string? fileCrc = "11111111";
-            var fs = new FileStream($"{DataPath}[22CA4444] Color Grid.bin", FileMode.Open, FileAccess.Read);
+            var fs = new FileStream($"{DataPath}{fileName}", FileMode.Open, FileAccess.Read);
             var result = romcenterPlugin.GetSignature(fs, fileCrc);
             Assert.NotNull(result);
             Assert.Equal("", result.ErrorMessage);
-            Assert.Equal(".bin", result.Extension);
-            Assert.Equal("RAW", result.Format);
-            Assert.Equal(4 * 1024, result.Size);
-            Assert.Equal("", result.Comment);
-            Assert.Equal(fileCrc, result.Signature);
-        }
-
-        [Fact]
-        public void GetSignatureHeaderTest()
-        {
-            const string? fileCrc = "11111111";
-            var fs = new FileStream($"{DataPath}[22CA4444] Color Grid.a78", FileMode.Open, FileAccess.Read);
-            var result = romcenterPlugin.GetSignature(fs, fileCrc);
-            Assert.NotNull(result);
-            Assert.Equal(".a78", result.Extension);
-            Assert.Equal("A78", result.Format);
-            Assert.Equal(4 * 1024, result.Size);
-            Assert.Equal("", result.Comment);
-            Assert.Equal("", result.ErrorMessage);
-            Assert.Equal("22ca4444", result.Signature);
-        }
-
-        /// <summary>
-        /// Rom size should be a multiple of 1024
-        /// </summary>
-        [Fact]
-        public void GetSignatureNotARomTest()
-        {
-            const string? fileCrc = "11111111";
-            var fs = new FileStream($"{DataPath}not a rom.bin", FileMode.Open, FileAccess.Read);
-            var result = romcenterPlugin.GetSignature(fs, fileCrc);
-            Assert.NotNull(result);
-            Assert.Equal("", result.Extension);
-            Assert.Equal(7079, result.Size);
-            Assert.Equal("Not an atari 7800 rom (invalid size)", result.Comment);
-            Assert.Equal("", result.ErrorMessage);
-            Assert.Equal(fileCrc, result.Signature);
+            Assert.Equal(extension, result.Extension);
+            Assert.Equal(size, result.Size);
+            Assert.Equal(format, result.Format);
+            Assert.StartsWith(comment, result.Comment);
+            Assert.Equal(crc, result.Signature);
         }
 
         /// <summary>
@@ -107,23 +79,6 @@ namespace PluginTest.A7800
             Assert.Equal("Not an atari 7800 rom (invalid size)", result.Comment);
             Assert.Equal("", result.ErrorMessage);
             Assert.Equal("3bcbd64d", result.Signature);
-        }
-
-        /// <summary>
-        /// File rom size should match rom size in header
-        /// </summary>
-        [Fact]
-        public void GetSignatureIncorrectSizeTest()
-        {
-            const string? fileCrc = "11111111";
-            var fs = new FileStream($"{DataPath}bad size.a78", FileMode.Open, FileAccess.Read);
-            var result = romcenterPlugin.GetSignature(fs, fileCrc);
-            Assert.NotNull(result);
-            Assert.Equal(".a78", result.Extension);
-            Assert.Equal(4 * 1024, result.Size);
-            Assert.StartsWith("Rom size stored in header", result.Comment);
-            Assert.Equal("", result.ErrorMessage);
-            Assert.Equal("22ca4444", result.Signature);
         }
 
         /// <summary>

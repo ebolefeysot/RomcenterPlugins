@@ -95,6 +95,79 @@ namespace PluginLib
             return new MemoryStream(dataDst);
         }
 
+
+        /// <summary>
+        /// Take a memory stream, and return a de-interleave, un-swapped and bytes re-ordered memory stream
+        /// </summary>
+        /// <param name="srcStream">interleaved memory stream</param>
+        /// <param name="headerSize">Size of the header to skip</param>
+        /// <param name="byteOrder">Bytes order in the stream. Bytes will be re-ordered accordingly.</param>
+        /// <returns></returns>
+        public static MemoryStream CleanStream(MemoryStream srcStream, int headerSize, ByteOrderEnum byteOrder)
+        {
+            switch (byteOrder)
+            {
+                case ByteOrderEnum.ByteSwapped:
+                    return UnSwapBytes(srcStream, headerSize);
+                case ByteOrderEnum.LittleEndian:
+                    return ReverseBytes(srcStream, headerSize);
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// ABCD -> BADC
+        /// </summary>
+        /// <param name="srcStream"></param>
+        /// <param name="headerSize"></param>
+        /// <returns></returns>
+        private static MemoryStream UnSwapBytes(MemoryStream srcStream, int headerSize)
+        {
+            var ms = new MemoryStream();
+            srcStream.Position = 0;
+            if (headerSize > 0)
+            {
+                //copy header
+                srcStream.CopyTo(ms, headerSize);
+                srcStream.Position = headerSize;
+                ms.Position = headerSize;
+            }
+
+            //swap
+            byte[] data = srcStream.GetBuffer();
+            for (int ctr = 0; ctr < data.Length / 2; ctr++)
+            {
+                var high = data[ctr * 2];
+                var low = data[ctr * 2 + 1];
+                data[ctr * 2] = low;
+                data[ctr * 2 + 1] = high;
+            }
+
+            ms.Write(data, 0, data.Length);
+            return ms;
+        }
+
+        /// <summary>
+        /// ABCD -> DCBA
+        /// </summary>
+        /// <param name="srcStream"></param>
+        /// <param name="headerSize"></param>
+        /// <returns></returns>
+        private static MemoryStream ReverseBytes(MemoryStream srcStream, int headerSize)
+        {
+            srcStream.Position = 0;
+            var br = new BinaryReader(srcStream);
+            var bytes = br.ReadBytes((int)br.BaseStream.Length);
+
+            for (int i = 0; i < bytes.Length / 4; i++)
+            {
+                //swap 4 bytes
+                Array.Reverse(bytes, i * 4, 4);
+            }
+            return new MemoryStream(bytes);
+        }
+
         public static int GetLong(BinaryReader br, int offset)
         {
             br.BaseStream.Position = offset;
@@ -110,6 +183,22 @@ namespace PluginLib
         {
             using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
             fileStream.SetLength(length);
+        }
+
+        public enum ByteOrderEnum
+        {
+            /// <summary>
+            /// ABCD
+            /// </summary>
+            Regular,
+            /// <summary>
+            /// BADC
+            /// </summary>
+            ByteSwapped,
+            /// <summary>
+            /// DCBA
+            /// </summary>
+            LittleEndian
         }
     }
 }

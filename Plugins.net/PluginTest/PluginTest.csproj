@@ -31,9 +31,12 @@
   <ItemGroup>
     <ProjectReference Include="..\a7800\a7800.csproj" />
     <ProjectReference Include="..\gbx\gbx.csproj" />
+    <ProjectReference Include="..\Lynx\Lynx.csproj" />
+    <ProjectReference Include="..\N64\N64.csproj" />
     <ProjectReference Include="..\nes\nes.csproj" />
     <ProjectReference Include="..\PluginLib\PluginLib.csproj" />
     <ProjectReference Include="..\SegaGenesis\SegaGenesis.csproj" />
+    <ProjectReference Include="..\sms\sms.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +77,36 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="gbx\Data\not a rom.gbc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lynx\Data\%28AA8DC2D8%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lynx\Data\Hockey lnx.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lynx\Data\Hockey lyx.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%283CE60709%29SM64-n64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%283CE60709%29SM64-V64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%283CE60709%29SM64-z64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%2842c43204%29SM64-n64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%2842c43204%29SM64-V64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\%2842c43204%29SM64-z64.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="N64\Data\not a rom.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="nes\Data\%285E607DCF%29 BIOS fds.bin">
@@ -121,6 +154,10 @@
     <None Update="SegaGenesis\Data\%28F9394E97%29 Sonic_smd.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="sms\Data\" />
   </ItemGroup>
 
 </Project>
