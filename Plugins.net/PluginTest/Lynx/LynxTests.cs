@@ -14,9 +14,9 @@ namespace PluginTest.Lynx
         }
 
         [Theory]
-        [InlineData("Hockey lnx.bin", ".lnx", "", 256 * 1024, "11111111")]
-        [InlineData("Hockey lyx.bin", ".lyx", "Lyx", 256 * 1024, "11111111", "Rom is too small")]
-        [InlineData("(AA8DC2D8) unknown.rom", "", "", 128 * 1024, "11111111")]
+        [InlineData("Hockey lnx.bin", ".lnx", "Lnx", 256 * 1024, "e8b45707")]
+        [InlineData("Hockey lyx.bin", ".lyx", "Lyx", 256 * 1024, "11111111")]
+        [InlineData("(AA8DC2D8) unknown.rom", ".lyx", "Lyx", 128 * 1024, "11111111")]
         public void GetSignaturesTest(string fileName, string extension, string format, int size, string crc, string comment = "")
         {
             const string? fileCrc = "11111111";

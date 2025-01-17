@@ -4,6 +4,10 @@ public class RomFormat
 {
     public FormatEnum Format { get; set; }
     public string Comment { get; set; } = "";
+
+    /// <summary>
+    /// Size of the header.
+    /// </summary>
     public int HeaderSizeInBytes { get; set; }
 
     /// <summary>
@@ -11,7 +15,6 @@ public class RomFormat
     /// </summary>
     public int RomSizeInBytes { get; set; }
     public string Error { get; set; } = "";
-    public int HeaderRomSizeInBytes { get; set; }
     public short HeaderVersion { get; set; }
     public string FormatTxt { get; set; } = "";
 }

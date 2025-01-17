@@ -67,31 +67,28 @@ public partial class RcPlugin
         var format = new RomFormat();
         var br = new BinaryReader(stream);
 
-        format.HeaderVersion = br.ReadByte();
-        format.Format = FormatEnum.Lyx;
-
-        var magicString = new string(br.ReadChars(4)).ToUpper();
-        if (magicString == headerText)
+        var magicString = br.ReadBytes(4);
+        if (System.Text.Encoding.UTF8.GetString(magicString) == headerText)
         {
             format.Format = FormatEnum.Lnx;
             format.HeaderSizeInBytes = headerSizeInBytes;
             format.RomSizeInBytes = (int)stream.Length - headerSizeInBytes;
-            format.HeaderRomSizeInBytes = 0;
         }
         else
         {
             // No header
+            format.Format = FormatEnum.Lyx;
             format.HeaderSizeInBytes = 0;
             format.RomSizeInBytes = (int)stream.Length;
+        }
 
-            //check size multiple of 1KB
-            if (format.RomSizeInBytes % 1024 != 0)
-            {
-                format.Comment = "Not a atari Lynx rom (invalid size)";
-                format.Format = FormatEnum.None;
-                format.FormatTxt = "";
-                return format;
-            }
+        //check size multiple of 1KB
+        if (format.RomSizeInBytes % 1024 != 0)
+        {
+            format.Comment = "Not a atari Lynx rom (invalid size)";
+            format.Format = FormatEnum.None;
+            format.FormatTxt = "";
+            return format;
         }
 
         return format;
