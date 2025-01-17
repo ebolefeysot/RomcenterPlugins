@@ -23,7 +23,7 @@ public partial class RcPlugin
 
     private const string PlugInName = "Nintento nes crc calculator"; //full name of plug in
     private const string Author = "Eric Bole-Feysot"; //Author name
-    private const string Version = "1.0"; //version of the plug in
+    private const string Version = "2.0"; //version of the plug in
     private const string WebPage = "www.romcenter.com"; //home page of plug in
     private const string Email = "eric@romcenter.com"; //Email of plug in support
     private const string Description = "Nintendo nes crc calculator. Support .nes (ines/nes2), .unf, .ffe";
