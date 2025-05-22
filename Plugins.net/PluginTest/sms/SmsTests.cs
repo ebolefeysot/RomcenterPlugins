@@ -14,8 +14,8 @@ namespace PluginTest.sms
         }
 
         [Theory]
-        [InlineData("(53734E3A) Doom 32x_bin.rom", ".gen", "32X", 3 * 1024 * 1024, "11111111")]
-        [InlineData("(3F888CF4) BIOS Genesis_bin.rom", "", "", 2 * 1024, "11111111", "Rom is too small")]
+        [InlineData("(655FB1F4) Bank Panic (Europe)_sms.rom", ".sms", "sms", 32 * 1024, "11111111")]
+        [InlineData("(41884e46) unknown.rom", "", "", 2304, "11111111", "Rom is too small")]
         public void GetSignaturesTest(string fileName, string extension, string format, int size, string crc, string comment = "")
         {
             const string? fileCrc = "11111111";
@@ -30,8 +30,29 @@ namespace PluginTest.sms
             Assert.Equal(crc, result.Signature);
         }
 
+        [Fact]
+        public void AllBiosFiles_ShouldBeDetectedAsSms_WithSmsExtension()
+        {
+            var biosFolderPath = @"sms\Data\Bios";
+            var biosFiles = Directory.GetFiles(biosFolderPath, "*.*", SearchOption.TopDirectoryOnly);
+
+            const string? fileCrc = "";
+            foreach (var file in biosFiles)
+            {
+                using var fs = File.OpenRead(file);
+                var result = romcenterPlugin.GetSignature(fs, fileCrc);
+                Assert.NotNull(result);
+                Assert.Equal("", result.ErrorMessage);
+                Assert.Equal(".sms", result.Extension);
+                Assert.Equal("sms", result.Format);
+                Assert.True(result.Size > 0);
+                Assert.True(result.Signature.Length > 0);
+            }
+        }
+
         /// <summary>
         /// ZipCrc not sent (unzipped rom for example). It should be calculated.
+        /// Rom is 128KB with a crc of 0xAA8DC2D8
         /// </summary>
         [Theory]
         [InlineData(null)]

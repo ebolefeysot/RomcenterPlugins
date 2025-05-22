@@ -8,5 +8,7 @@ public enum FormatEnum
     _32x,
     Md, //mega drive, rom is interleaved and swapped
     TooBig,
-    TooSmall
+    TooSmall,
+    Bin,
+    Bios
 }

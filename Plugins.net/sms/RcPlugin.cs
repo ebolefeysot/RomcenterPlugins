@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SegaGenesis
+namespace sms
 {
     public partial class RcPlugin : IRomcenterPlugin
     {
@@ -70,7 +70,7 @@ namespace SegaGenesis
                 //check bios crc
                 if (knownBiosCrcs.Contains(hash))
                 {
-                    romFormat.Format = FormatEnum.Bios;
+                    romFormat.Format = FormatEnum.Sms;
                 }
                 else
                 {

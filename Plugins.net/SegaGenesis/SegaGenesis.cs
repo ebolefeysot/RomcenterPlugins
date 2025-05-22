@@ -1,6 +1,6 @@
 ﻿//Plug in for RomCenter
 //
-// (C) Copyright 2009-2024 Eric Bole-Feysot
+// (C) Copyright 2009-2025 Eric Bole-Feysot
 // All Rights Reserved.
 //
 //The dll produced by this code is a signature plug in for RomCenter application
@@ -8,8 +8,11 @@
 
 //The main function (GetSignature) calculates a signature (crc...) of a rom given in parameters.
 
+using Newtonsoft.Json;
 using PluginLib;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SegaGenesis;
 
@@ -25,8 +28,32 @@ public partial class RcPlugin
     private const string Email = "eric@romcenter.com"; //Email of plug in support
     private const string Description = "Sega Genesis Megadrive crc calculator. Support .32x, .bin, .smd and .md format.";
 
+    private const long BiosMinSizeInBytes = 256; //min size of bios files
     private const long RomMinSizeInBytes = 32 * 1024; //min size of the core rom, 32KB
     private const long RomMaxSizeInBytes = 4 * 1024 * 1024; //max size of the core rom, 4MB
+    private const string KnownCrcsFile = "SegaGenesisBiosCrcs.json";
+
+
+    public RcPlugin()
+    {
+        knownBiosCrcs = LoadKnownCrcs(KnownCrcsFile);
+    }
+
+    private static HashSet<string> LoadKnownCrcs(string path)
+    {
+        if (File.Exists(KnownCrcsFile))
+        {
+            var json = File.ReadAllText(path);
+            var config = JsonConvert.DeserializeObject<BiosCrcConfig>(json);
+            return new HashSet<string>(config?.KnownBiosCrcs?.Select(c => c.ToLowerInvariant()) ?? []);
+        }
+        return new HashSet<string>([]);
+    }
+
+    private class BiosCrcConfig
+    {
+        public List<string> KnownBiosCrcs { get; set; } = [];
+    }
 
     private string GetFileExtension(FormatEnum romFormatType)
     {
@@ -36,6 +63,8 @@ public partial class RcPlugin
             FormatEnum.Smd => ".smd",
             FormatEnum.Md => ".gen",
             FormatEnum.Gen => ".gen",
+            FormatEnum.Bin => ".bin",
+            FormatEnum.Bios => ".bin",
             _ => ""
         };
     }
@@ -48,6 +77,8 @@ public partial class RcPlugin
             FormatEnum.Gen => "Genesis",
             FormatEnum.Smd => "Super Magic Drive",
             FormatEnum._32x => "32X",
+            FormatEnum.Bin => "32X",
+            FormatEnum.Bios => "Bios",
             _ => ""
         };
     }
@@ -77,7 +108,7 @@ public partial class RcPlugin
         else if (Helper.GetHexString(br, 0x105, 3) == "333258") //32X
         {
             //sega 32x format bin
-            format.Format = FormatEnum.Gen;
+            format.Format = FormatEnum._32x;
             format.HeaderSizeInBytes = 0;
         }
         else if (Helper.GetHexString(br, 0x100, 4) == "53454741") //SEGA
@@ -88,11 +119,14 @@ public partial class RcPlugin
         {
             format.Format = FormatEnum.Gen;
         }
-        else if (Helper.GetHexString(br, 0x490, 4) == "53637274")
+        else if (Helper.GetHexString(br, 0x280, 4) == "45413358") //EA3X
         {
             //sega 32x format .32x
-            format.Format = FormatEnum._32x;
+            format.Format = FormatEnum.Bin;
             format.HeaderSizeInBytes = 512;
+            format.RomSizeInBytes -= format.HeaderSizeInBytes;
+            format.InterleavedBlockSize = 8192;
+            format.Swapped = true;
         }
         else if (Helper.GetHexString(br, 0x520, 4) == "20536563")
         {
@@ -107,6 +141,11 @@ public partial class RcPlugin
         switch (format.Format)
         {
             case FormatEnum._32x:
+                //case FormatEnum.Bin:
+                format.RomSizeInBytes -= format.HeaderSizeInBytes;
+                format.InterleavedBlockSize = 0;
+                format.Swapped = false;
+                break;
             case FormatEnum.Smd:
                 format.HeaderRomSizeInBytes = Helper.GetLong(br, 0x2d1) + 1;
                 format.RomSizeInBytes -= format.HeaderSizeInBytes;
@@ -120,13 +159,6 @@ public partial class RcPlugin
                 format.Swapped = true;
                 break;
         }
-
-        //short romSize = Helper.GetByte(br, romSizeOffset);
-
-        //if (format.Format is FormatEnum.Smd or FormatEnum._32x && format.HeaderRomSizeInBytes != format.RomSizeInBytes)
-        //{
-        //    format.Comment = $"Rom size stored in header ({format.HeaderRomSizeInBytes} bytes) doesn't match real rom size ({format.RomSizeInBytes} bytes)";
-        //}
         return format;
     }
 }

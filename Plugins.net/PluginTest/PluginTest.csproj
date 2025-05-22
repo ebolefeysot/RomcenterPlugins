@@ -12,17 +12,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net40" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -136,7 +136,13 @@
     <None Update="SegaGenesis\Data\%2853734E3A%29 Doom 32x_32x.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SegaGenesis\Data\%2853734E3A%29 Doom 32x_bin.rom">
+    <None Update="SegaGenesis\Data\(53734E3A) Doom 32x_bin.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\(53734E3A) Doom 32x_32xx.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SegaGenesis\Data\%285C12EAE8%29 32X_G_BIOS.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SegaGenesis\Data\%285C12EAE8%29 BIOS 32X.md">
@@ -154,10 +160,66 @@
     <None Update="SegaGenesis\Data\%28F9394E97%29 Sonic_smd.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="sms\Data\" />
+    <None Update="sms\Data\%2841884e46%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\%28655FB1F4%29 Bank Panic %28Europe%29_sms.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\%28AA8DC2D8%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\%28B3D854F8%29 BIOS sms EU_sms.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\Sega Master System BIOS %281990%29%28Sega%29%28EU-US%29%28en%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\Sega Master System BIOS %281991%29%28Sega%29%28EU%29%28en%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\Sega Master System Store Display Unit BIOS %281987%29%28Sega%29%28US%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\SMS Prototype %28v1.0%29 [Proto] [BIOS].sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\SMS Prototype M404 [BIOS].sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\smsv2.41988bios.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\smsv3.41988bios.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Alex Kidd in Miracle World %28Korea%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Alex Kidd in Miracle World %28USA, Europe%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Hang-On &amp; Safari Hunt %28USA, Europe%29 %28v2.4%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Missile Defense 3-D %28USA, Europe%29 %28v4.4%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Sega Master System %28Europe%29 %28v2.0%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Sega Master System %28Japan%29 %28v2.1%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Sega Master System %28USA%29 %28Store Display Unit%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Sega Master System %28USA, Europe%29 %28v1.3%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sms\Data\Bios\[BIOS] Sonic The Hedgehog %28Europe%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
