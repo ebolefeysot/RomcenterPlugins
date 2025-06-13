@@ -1,11 +1,14 @@
 ﻿using PluginLib;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace snes
 {
     public partial class RcPlugin : IRomcenterPlugin
     {
+        private readonly HashSet<string> knownBiosCrcs;
+
         public PluginResult GetSignature(Stream romStream, string? zipCrc)
         {
             var result = new PluginResult();
@@ -17,7 +20,7 @@ namespace snes
                 //check rom size is above min
                 RomFormat romFormat;
 
-                if (romStream.Length < RomMinSizeInBytes)
+                if (romStream.Length < BiosMinSizeInBytes)
                 {
                     romFormat = new RomFormat
                     {
@@ -61,6 +64,22 @@ namespace snes
                         {
                             hash = GetCrc32(romStream, romFormat.HeaderSizeInBytes, romFormat.RomSizeInBytes);
                         }
+                    }
+                }
+
+                //check bios crc
+                if (knownBiosCrcs.Contains(hash))
+                {
+                    romFormat.Format = FormatEnum.Bios;
+                }
+                else
+                {
+                    //if not a bios, check size
+                    if (romStream.Length < RomMinSizeInBytes)
+                    {
+                        romFormat.Comment =
+                            $"Rom is too small ({romStream.Length} bytes), must be {RomMinSizeInBytes} bytes or more";
+                        romFormat.Format = FormatEnum.TooSmall;
                     }
                 }
 

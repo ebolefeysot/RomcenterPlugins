@@ -30,9 +30,17 @@ namespace PluginLib
         /// <returns></returns>
         public static string GetString(BinaryReader br, int offset, int length)
         {
-            br.BaseStream.Position = offset;
-            var chars = br.ReadChars(length).ToArray();
-            return new string(chars);
+            var originalPos = br.BaseStream.Position;
+            try
+            {
+                br.BaseStream.Seek(offset, SeekOrigin.Begin);
+                byte[] buffer = br.ReadBytes(length);
+                return System.Text.Encoding.ASCII.GetString(buffer).TrimEnd('\0', ' ');
+            }
+            finally
+            {
+                br.BaseStream.Seek(originalPos, SeekOrigin.Begin);
+            }
         }
 
         public static byte GetByte(BinaryReader br, int offset)

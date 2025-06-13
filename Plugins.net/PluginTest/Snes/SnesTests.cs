@@ -1,31 +1,30 @@
 ﻿using PluginTest.TestBase;
 
-namespace PluginTest.SegaGenesis
+namespace PluginTest.Snes
 {
     public class SnesTests
     {
-        private const string DataPath = @"SegaGenesis\data\";
+        private const string DataPath = @"Snes\data\";
         private readonly ManagedPlugin romcenterPlugin;
 
         public SnesTests()
         {
-            var pluginPath = "genesis.dll";
+            var pluginPath = "snes.dll";
             romcenterPlugin = new ManagedPlugin(pluginPath);
         }
 
         /// <summary>
-        /// Default crc passed to the plugin is 111111111. It is used for raw files (without header).
+        /// Default crc passed to the plugin is 111111111. It is used only for raw files (without header).
         /// </summary>
         [Theory]
-        [InlineData("(F9394E97) Sonic_bin.rom", ".gen", "Genesis", 512 * 1024, "11111111")]
-        [InlineData("(F9394E97) Sonic_md.rom", ".gen", "Mega Drive", 512 * 1024, "f9394e97")]
-        [InlineData("(F9394E97) Sonic_smd.rom", ".smd", "Super Magic Drive", 512 * 1024, "f9394e97")]
-        //raw rom : 3072KB
-        [InlineData("(53734E3A) Doom 32x_32x.rom", ".32x", "32X", 3 * 1024 * 1024, "11111111")]
-        //header 512 bytes : 3073KB
-        [InlineData("(53734E3A) Doom 32x_bin.rom", ".bin", "32X", 3 * 1024 * 1024, "53734e3a")]
-        [InlineData("(3F888CF4) BIOS Genesis_bin.rom", ".bin", "Bios", 2 * 1024, "3f888cf4", "")]
-        [InlineData("(5C12EAE8) 32X_G_BIOS.rom", ".bin", "Bios", 256, "5c12eae8", "")]
+        [InlineData("(CD973979) Gradius III (USA) ufos.rom", ".ufo", "Super UFO Pro SD", 512 * 1024, "cd973979")]
+        [InlineData("(CD973979) Gradius III (USA) fig.rom", ".fig", "Pro Fighter", 512 * 1024, "cd973979")]
+        //sfc is the clean raw format. Zip crc can be used.
+        [InlineData("(CD973979) Gradius III (USA) sfc.rom", ".sfc", "Super Famicom", 512 * 1024, "11111111")]
+        [InlineData("(CD973979) Gradius III (USA) swc.rom", ".smc", "Super Magicom / Wildcard", 512 * 1024, "cd973979")]
+        [InlineData("(CD973979) Gradius III (USA) smc.rom", ".smc", "Super Magicom / Wildcard", 512 * 1024, "cd973979")]
+        [InlineData("(CD973979) Gradius III (USA) gd.rom", ".smc", "Game Doctor", 512 * 1024, "cd973979")]
+        [InlineData("(CD973979) Gradius III (USA) ufo.rom", ".ufo", "UFO Super Drive", 512 * 1024, "cd973979")]
         [InlineData("(AA8DC2D8) unknown.rom", "", "", 128 * 1024, "11111111")]
         public void GetSignaturesTest(string fileName, string extension, string format, int size, string crc, string comment = "")
         {

@@ -3,7 +3,14 @@ namespace snes;
 public enum FormatEnum
 {
     None,
-    Sms,
+    fig,
+    GameDoctor,
+    sfc,
+    smc,
+    swc,
+    ufo,
+    ufos,
     TooBig,
-    TooSmall
+    TooSmall,
+    Bios
 }

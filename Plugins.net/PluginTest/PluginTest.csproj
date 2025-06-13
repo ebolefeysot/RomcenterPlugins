@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PluginTest.csproj.Backup.tmp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net40" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -30,13 +34,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\a7800\a7800.csproj" />
+    <ProjectReference Include="..\fds\fds.csproj" />
     <ProjectReference Include="..\gbx\gbx.csproj" />
     <ProjectReference Include="..\Lynx\Lynx.csproj" />
     <ProjectReference Include="..\N64\N64.csproj" />
     <ProjectReference Include="..\nes\nes.csproj" />
+    <ProjectReference Include="..\PcEngine\PcEngine.csproj" />
     <ProjectReference Include="..\PluginLib\PluginLib.csproj" />
     <ProjectReference Include="..\SegaGenesis\SegaGenesis.csproj" />
     <ProjectReference Include="..\sms\sms.csproj" />
+    <ProjectReference Include="..\snes\snes.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -218,6 +225,111 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="sms\Data\Bios\[BIOS] Sonic The Hedgehog %28Europe%29.sms">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28AA8DC2D8%29 unknown.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 fig.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 gd.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 sfc.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 smc.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 swc.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 ufo.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\%28CD973979%29 Gradius III %28USA%29 ufos.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\cx4.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1b.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1b.data.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1b.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp1b.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp2.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp2.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp2.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp3.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp3.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp3.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp4.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp4.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\dsp4.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\sgb.boot.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st010.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st010.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st010.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st011.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st011.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st011.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st018.data.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st018.program.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Snes\Data\SNES Bios %281%29\st018.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

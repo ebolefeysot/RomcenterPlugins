@@ -37,7 +37,7 @@ namespace sms
 
         public RcPlugin()
         {
-            knownBiosCrcs = LoadKnownBiosCrcs(@"bios_crcs.json");
+            knownBiosCrcs = LoadKnownBiosCrcs("SmsBiosCrcs.json");
         }
 
         private static HashSet<string> LoadKnownBiosCrcs(string path)
