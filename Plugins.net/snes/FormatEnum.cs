@@ -7,7 +7,6 @@ public enum FormatEnum
     GameDoctor,
     sfc,
     smc,
-    swc,
     ufo,
     ufos,
     TooBig,

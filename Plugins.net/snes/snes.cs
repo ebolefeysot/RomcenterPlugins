@@ -20,29 +20,87 @@ using System.Linq;
 
 namespace snes;
 
+/// <summary>
+/// RomCenter plugin for Super NES ROM files.
+/// Handles various Super NES ROM formats including SFC, SMC, FIG, SWC, etc.
+/// </summary>
 public partial class RcPlugin
 {
-    private const string DllType = "romcenter signature calculator"; //Identification string, do not change
-    private const string InterfaceVersion = "4.2"; //version of romcenter plugin internal interface
+    /// <summary>
+    /// Identification string for the plugin. Do not change.
+    /// </summary>
+    private const string DllType = "romcenter signature calculator";
 
-    private const string PlugInName = "Sega Genesis Megadrive crc calculator"; //full name of plug in
-    private const string Author = "Eric Bole-Feysot"; //Author name
-    private const string Version = "2.0"; //version of the plug in
-    private const string WebPage = "www.romcenter.com"; //home page of plug in
-    private const string Email = "eric@romcenter.com"; //Email of plug in support
+    /// <summary>
+    /// Version of RomCenter plugin internal interface.
+    /// </summary>
+    private const string InterfaceVersion = "4.2";
+
+    /// <summary>
+    /// Full name of the plugin.
+    /// </summary>
+    private const string PlugInName = "Sega Genesis Megadrive crc calculator";
+
+    /// <summary>
+    /// Author name of the plugin.
+    /// </summary>
+    private const string Author = "Eric Bole-Feysot";
+
+    /// <summary>
+    /// Version of the plugin.
+    /// </summary>
+    private const string Version = "2.0";
+
+    /// <summary>
+    /// Home page of the plugin.
+    /// </summary>
+    private const string WebPage = "www.romcenter.com";
+
+    /// <summary>
+    /// Email for plugin support.
+    /// </summary>
+    private const string Email = "eric@romcenter.com";
+
+    /// <summary>
+    /// Description of the plugin functionality.
+    /// </summary>
     private const string Description = "Sega Genesis Megadrive crc calculator. Support .32x, .bin, .smd and .md format.";
 
-    private const long BiosMinSizeInBytes = 256; //min size of bios files
-    private const long RomMinSizeInBytes = 32 * 1024; //min size of the core rom, 32KB
-    private const long RomMaxSizeInBytes = 4 * 1024 * 1024; //max size of the core rom, 4MB
+    /// <summary>
+    /// Minimum size of BIOS files in bytes.
+    /// </summary>
+    private const long BiosMinSizeInBytes = 256;
+
+    /// <summary>
+    /// Minimum size of the core ROM in bytes (32KB).
+    /// </summary>
+    private const long RomMinSizeInBytes = 32 * 1024;
+
+    /// <summary>
+    /// Maximum size of the core ROM in bytes (4MB).
+    /// </summary>
+    private const long RomMaxSizeInBytes = 4 * 1024 * 1024;
+
+    /// <summary>
+    /// Filename for the known BIOS CRCs JSON file.
+    /// </summary>
     private const string KnownCrcsFile = "SegaGenesisBiosCrcs.json";
 
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RcPlugin"/> class.
+    /// Loads known BIOS CRCs from the configuration file.
+    /// </summary>
     public RcPlugin()
     {
         knownBiosCrcs = LoadKnownCrcs(KnownCrcsFile);
     }
 
+    /// <summary>
+    /// Loads known BIOS CRCs from a JSON configuration file.
+    /// </summary>
+    /// <param name="path">Path to the JSON configuration file.</param>
+    /// <returns>A HashSet containing known BIOS CRCs in lowercase format.</returns>
     private static HashSet<string> LoadKnownCrcs(string path)
     {
         if (File.Exists(KnownCrcsFile))
@@ -54,11 +112,22 @@ public partial class RcPlugin
         return new HashSet<string>([]);
     }
 
+    /// <summary>
+    /// Configuration class for storing known BIOS CRCs.
+    /// </summary>
     private class BiosCrcConfig
     {
+        /// <summary>
+        /// Gets or sets the list of known BIOS CRCs.
+        /// </summary>
         public List<string> KnownBiosCrcs { get; set; } = [];
     }
 
+    /// <summary>
+    /// Gets the file extension associated with a specific ROM format type.
+    /// </summary>
+    /// <param name="romFormatType">The ROM format type.</param>
+    /// <returns>The file extension including the dot (e.g., ".sfc").</returns>
     private string GetFileExtension(FormatEnum romFormatType)
     {
         return romFormatType switch
@@ -66,7 +135,7 @@ public partial class RcPlugin
             FormatEnum.fig => ".fig",
             FormatEnum.sfc => ".sfc",
             FormatEnum.smc => ".smc",
-            FormatEnum.GameDoctor => ".smc",
+            FormatEnum.GameDoctor => ".gd3",
             FormatEnum.ufo => ".ufo",
             FormatEnum.ufos => ".ufo",
             FormatEnum.Bios => ".rom",
@@ -74,6 +143,11 @@ public partial class RcPlugin
         };
     }
 
+    /// <summary>
+    /// Gets a human-readable description of the ROM format.
+    /// </summary>
+    /// <param name="romFormat">The ROM format enum value.</param>
+    /// <returns>A string describing the ROM format.</returns>
     private string GetFormatText(FormatEnum romFormat)
     {
         return romFormat switch
@@ -90,10 +164,198 @@ public partial class RcPlugin
     }
 
     /// <summary>
-    /// Return rom format
+    /// Determines the format of a ROM based on its header.
     /// </summary>
-    /// <param name="stream"></param>
-    /// <returns></returns>
+    /// <param name="rom">The ROM data as a byte array.</param>
+    /// <returns>The detected format of the ROM.</returns>
+    /// <remarks>
+    /// This method analyzes the ROM data to determine its format by checking for known
+    /// copier headers and other format-specific characteristics.
+    /// </remarks>
+    public FormatEnum GetHeaderFormat(byte[] rom)
+    {
+        if (rom == null || rom.Length < 512)
+        {
+            return FormatEnum.TooSmall;
+        }
+
+        int minSize = 0x8000;      // 32 KB
+        int maxSize = 0x600000;    // 6 MB
+
+        if (rom.Length < minSize)
+        {
+            return FormatEnum.TooSmall;
+        }
+
+        if (rom.Length > maxSize)
+        {
+            return FormatEnum.TooBig;
+        }
+
+        var header = new byte[512];
+        if (rom.Length >= 512)
+        {
+            Array.Copy(rom, 0, header, 0, 512);
+        }
+
+        //Check if it appears to be a valid SNES ROM (based on internal header)
+        if (!IsValidSnesRom(rom))
+        {
+            return FormatEnum.None;
+        }
+
+        //Check known copier headers
+        if (IsGameDoctorHeader(header)) return FormatEnum.GameDoctor;
+        if (IsProFighterHeaderSpecific(header)) return FormatEnum.fig;
+        if (IsSuperMagicomHeader(header)) return FormatEnum.smc;
+        if (IsSuperUfoHeader(header)) return FormatEnum.ufo;
+
+        // 512-byte header but not recognized → assume Super Magicom
+        if (Has512ByteHeader(rom.Length)) return FormatEnum.smc;
+
+        // No known copier header and no 512-byte header → plain SFC dump
+        return FormatEnum.sfc;
+    }
+
+    /// <summary>
+    /// Determines if the ROM data appears to be a valid SNES ROM.
+    /// </summary>
+    /// <param name="rom">The ROM data as a byte array.</param>
+    /// <returns>True if the ROM appears to be a valid SNES ROM; otherwise, false.</returns>
+    /// <remarks>
+    /// This method checks for valid title strings at known header locations for
+    /// LoROM, HiROM, and ExHiROM formats.
+    /// </remarks>
+    private bool IsValidSnesRom(byte[] rom)
+    {
+        int[] headerOffsets = { 0x7FC0, 0xFFC0, 0x40FFC0 }; // LoROM, HiROM, ExHiROM
+        foreach (int offset in headerOffsets)
+        {
+            if (rom.Length < offset + 21)
+                continue;
+
+            bool hasName = true;
+            for (int i = 0; i < 21; i++)
+            {
+                byte c = rom[offset + i];
+                if (c != 0x20 && (c < 0x20 || c > 0x7E)) // allow space or printable ASCII
+                {
+                    hasName = false;
+                    break;
+                }
+            }
+            if (hasName) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Determines if the header is a Game Doctor format header.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a Game Doctor format; otherwise, false.</returns>
+    private bool IsGameDoctorHeader(byte[] header)
+    {
+        return header.Length >= 16 &&
+               System.Text.Encoding.ASCII.GetString(header, 0, 16) == "GAME DOCTOR SF 3";
+    }
+
+    /// <summary>
+    /// Determines if the header is a Pro Fighter format header by checking specific byte patterns.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a Pro Fighter format; otherwise, false.</returns>
+    /// <remarks>
+    /// Checks for specific byte patterns that indicate HiROM or LoROM Pro Fighter formats.
+    /// </remarks>
+    private bool IsProFighterHeaderSpecific(byte[] header)
+    {
+        if (header.Length < 4) return false;
+
+        byte emu1 = header[0];
+        byte emu2 = header[1];
+        byte hirom = header[2];
+
+        if (hirom == 0x80) // HiROM
+        {
+            if ((emu1 == 0x77 || emu1 == 0xF7) && emu2 == 0x83) return true;
+            if (emu1 == 0xDD && (emu2 == 0x82 || emu2 == 0x02)) return true;
+            if (emu1 == 0xFD && emu2 == 0x82) return true;
+        }
+        else if (hirom == 0x00) // LoROM
+        {
+            if ((emu1 == 0x77 || emu1 == 0x47) && emu2 == 0x83) return true;
+            if ((emu1 == 0x00 || emu1 == 0x40) && (emu2 == 0x80 || emu2 == 0x00)) return true;
+            if (emu1 == 0x11 && emu2 == 0x02) return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Detect super wildcard (swc) or Super Magicom (smc) headers based on specific byte patterns.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a Super Magicom format; otherwise, false.</returns>
+    /// <remarks>
+    /// SWC header IDs: 0xAA, 0xBB at bytes 8 and 9, type = 0x04
+    /// </remarks>
+    private bool IsSuperMagicomHeader(byte[] header)
+    {
+        // SWC header IDs: 0xAA, 0xBB at bytes 0 and 1, type = 0x05
+        return header.Length >= 3 && header[8] == 0xAA && header[9] == 0xBB && header[10] == 0x04;
+    }
+
+    /// <summary>
+    /// Determines if the header is a Super UFO format header.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a Super UFO format; otherwise, false.</returns>
+    private bool IsSuperUfoHeader(byte[] header)
+    {
+        return header.Length >= 8 &&
+               System.Text.Encoding.ASCII.GetString(header, 0, 8) == "SUPERUFO";
+    }
+
+    /// <summary>
+    /// Determines if the header is an MGD format header.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is an MGD format; otherwise, false.</returns>
+    /// <remarks>
+    /// Uses heuristic detection based on specific byte patterns.
+    /// Not as reliably detectable as other formats.
+    /// </remarks>
+    private bool IsMgdHeader(byte[] header)
+    {
+        // Heuristic: 0xF0 or 0x78 in specific positions or known patterns
+        // Not as reliably detectable as others
+        return header.Length >= 16 && header[0] == 0xF0 && header[1] == 0x78;
+    }
+
+    /// <summary>
+    /// Determines if the ROM size indicates the presence of a 512-byte header.
+    /// </summary>
+    /// <param name="romSize">The size of the ROM in bytes.</param>
+    /// <returns>True if the ROM size indicates a 512-byte header; otherwise, false.</returns>
+    /// <remarks>
+    /// Checks if the ROM size modulo 1024 equals 512, which would indicate a 512-byte header.
+    /// </remarks>
+    private bool Has512ByteHeader(int romSize)
+    {
+        // Check for 512-byte header alignment
+        return (romSize % 1024) == 512;
+    }
+
+    /// <summary>
+    /// Determines the format of a ROM based on its header from a stream.
+    /// </summary>
+    /// <param name="stream">The stream containing the ROM data.</param>
+    /// <returns>A RomFormat object containing information about the detected format.</returns>
+    /// <remarks>
+    /// This method analyzes the ROM data from a stream to determine its format by checking
+    /// for known copier headers and other format-specific characteristics.
+    /// </remarks>
     private RomFormat GetHeaderFormat(Stream stream)
     {
         const int HEADER_SIZE = 512;
@@ -105,6 +367,12 @@ public partial class RcPlugin
             RomSizeInBytes = (int)stream.Length,
             HeaderSizeInBytes = 0
         };
+
+        //rom size should be a multiple of 512KB
+        if (stream.Length < 0x8000 || (stream.Length % 512) != 0)
+        {
+            return format; // Invalid size for SNES ROM
+        }
 
         // First, check if we have a copier header by examining the first 512 bytes
         byte[] possibleHeader = new byte[HEADER_SIZE];
@@ -152,6 +420,11 @@ public partial class RcPlugin
             }
         }
 
+        if (!hasValidHeaderedTitle && !hasValidHeaderlessTitle)
+        {
+            return format; // No valid titles found, cannot determine format
+        }
+
         // If we detected a specific copier format, trust it regardless of title validation
         if (detectedCopierFormat != FormatEnum.None)
         {
@@ -194,6 +467,14 @@ public partial class RcPlugin
         return format;
     }
 
+    /// <summary>
+    /// Detects the copier format based on the header data.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>The detected copier format, or FormatEnum.None if no known format is detected.</returns>
+    /// <remarks>
+    /// Checks for various copier formats in order of specificity (most specific first).
+    /// </remarks>
     private FormatEnum DetectCopierFormat(byte[] header)
     {
         if (header.Length < 16) return FormatEnum.None;
@@ -213,13 +494,13 @@ public partial class RcPlugin
         }
 
         // Super Wild Card / Super Magicom detection (very specific signature)
-        if (IsWildCardFamiconHeaderSpecific(header))
+        if (IsSuperMagicomHeader(header))
         {
             return FormatEnum.smc; //more used than swc
         }
 
         // Game Doctor detection (more restrictive)
-        if (IsGameDoctorHeaderSpecific(header))
+        if (IsGameDoctorHeader(header))
         {
             return FormatEnum.GameDoctor;
         }
@@ -233,6 +514,11 @@ public partial class RcPlugin
         return FormatEnum.None;
     }
 
+    /// <summary>
+    /// Determines if the header is a UFO Super Drive format header.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a UFO Super Drive format; otherwise, false.</returns>
     private bool IsUFOHeaderSpecific(byte[] header)
     {
         if (header.Length < 8) return false;
@@ -246,6 +532,11 @@ public partial class RcPlugin
         return false;
     }
 
+    /// <summary>
+    /// Determines if the header is a UFO Split format header.
+    /// </summary>
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a UFO Split format; otherwise, false.</returns>
     private bool IsUFOSplitSpecific(byte[] header)
     {
         if (header.Length < 8) return false;
@@ -259,51 +550,43 @@ public partial class RcPlugin
         return false;
     }
 
+    //private bool IsProFighterHeaderSpecific(byte[] header)
+    //{
+    //    if (header == null || header.Length < 4)
+    //        return false;
+
+    //    byte hirom = header[2];         // header->hirom
+    //    byte emulation1 = header[0];    // header->emulation1
+    //    byte emulation2 = header[1];    // header->emulation2
+
+    //    if (hirom == 0x80) // HiROM
+    //    {
+    //        if ((emulation1 == 0x77 || emulation1 == 0xF7) && emulation2 == 0x83)
+    //            return true;
+    //        if (emulation1 == 0xDD && (emulation2 == 0x82 || emulation2 == 0x02))
+    //            return true;
+    //        if (emulation1 == 0xFD && emulation2 == 0x82)
+    //            return true;
+    //    }
+    //    else if (hirom == 0x00) // LoROM
+    //    {
+    //        if ((emulation1 == 0x77 || emulation1 == 0x47) && emulation2 == 0x83)
+    //            return true;
+    //        if ((emulation1 == 0x00 || emulation1 == 0x40) &&
+    //            (emulation2 == 0x80 || emulation2 == 0x00))
+    //            return true;
+    //        if (emulation1 == 0x11 && emulation2 == 0x02)
+    //            return true;
+    //    }
+
+    //    return false;
+    //}
+
     /// <summary>
-    /// Detect super wildcard (swc) or Super Magicom (smc) headers based on specific byte patterns.
+    /// Determines if the header is a Game Doctor format header using specific criteria.
     /// </summary>
-    /// <param name="header"></param>
-    /// <returns></returns>
-    private bool IsWildCardFamiconHeaderSpecific(byte[] header)
-    {
-        if (header.Length < 2) return false;
-
-        // Super Wild Card / Super Magicom has very specific signature
-        return header[8] == 0xAA && header[9] == 0xBB;
-    }
-
-    private bool IsProFighterHeaderSpecific(byte[] header)
-    {
-        if (header == null || header.Length < 4)
-            return false;
-
-        byte hirom = header[2];         // header->hirom
-        byte emulation1 = header[0];    // header->emulation1
-        byte emulation2 = header[1];    // header->emulation2
-
-        if (hirom == 0x80) // HiROM
-        {
-            if ((emulation1 == 0x77 || emulation1 == 0xF7) && emulation2 == 0x83)
-                return true;
-            if (emulation1 == 0xDD && (emulation2 == 0x82 || emulation2 == 0x02))
-                return true;
-            if (emulation1 == 0xFD && emulation2 == 0x82)
-                return true;
-        }
-        else if (hirom == 0x00) // LoROM
-        {
-            if ((emulation1 == 0x77 || emulation1 == 0x47) && emulation2 == 0x83)
-                return true;
-            if ((emulation1 == 0x00 || emulation1 == 0x40) &&
-                (emulation2 == 0x80 || emulation2 == 0x00))
-                return true;
-            if (emulation1 == 0x11 && emulation2 == 0x02)
-                return true;
-        }
-
-        return false;
-    }
-
+    /// <param name="header">The header data as a byte array.</param>
+    /// <returns>True if the header is a Game Doctor format; otherwise, false.</returns>
     private bool IsGameDoctorHeaderSpecific(byte[] header)
     {
         if (header == null || header.Length < 16)
@@ -315,6 +598,12 @@ public partial class RcPlugin
         return id == "GAME DOCTOR SF 3";
     }
 
+    /// <summary>
+    /// Sets the format to headerless SFC format.
+    /// </summary>
+    /// <param name="stream">The stream containing the ROM data.</param>
+    /// <param name="format">The RomFormat object to update.</param>
+    /// <returns>The updated RomFormat object.</returns>
     private RomFormat DetectHeaderlessFormat(Stream stream, RomFormat format)
     {
         format.Format = FormatEnum.sfc;
@@ -322,6 +611,17 @@ public partial class RcPlugin
         return format;
     }
 
+    /// <summary>
+    /// Resolves ambiguous ROM format cases where both headered and headerless detection methods yield valid results.
+    /// </summary>
+    /// <param name="stream">The stream containing the ROM data.</param>
+    /// <param name="possibleHeader">The first 512 bytes of the ROM that might be a header.</param>
+    /// <param name="detectedCopierFormat">Any previously detected copier format.</param>
+    /// <returns>A RomFormat object with the resolved format information.</returns>
+    /// <remarks>
+    /// Uses various heuristics including file size analysis and header pattern detection to determine
+    /// whether the ROM has a header and what format it is.
+    /// </remarks>
     private RomFormat ResolveAmbiguousFormat(Stream stream, byte[] possibleHeader, FormatEnum detectedCopierFormat)
     {
         var format = new RomFormat

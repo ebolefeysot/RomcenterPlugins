@@ -23,7 +23,7 @@ namespace PluginTest.Snes
         [InlineData("(CD973979) Gradius III (USA) sfc.rom", ".sfc", "Super Famicom", 512 * 1024, "11111111")]
         [InlineData("(CD973979) Gradius III (USA) swc.rom", ".smc", "Super Magicom / Wildcard", 512 * 1024, "cd973979")]
         [InlineData("(CD973979) Gradius III (USA) smc.rom", ".smc", "Super Magicom / Wildcard", 512 * 1024, "cd973979")]
-        [InlineData("(CD973979) Gradius III (USA) gd.rom", ".smc", "Game Doctor", 512 * 1024, "cd973979")]
+        [InlineData("(CD973979) Gradius III (USA) gd.rom", ".gd3", "Game Doctor", 512 * 1024, "cd973979")]
         [InlineData("(CD973979) Gradius III (USA) ufo.rom", ".ufo", "UFO Super Drive", 512 * 1024, "cd973979")]
         [InlineData("(AA8DC2D8) unknown.rom", "", "", 128 * 1024, "11111111")]
         public void GetSignaturesTest(string fileName, string extension, string format, int size, string crc, string comment = "")

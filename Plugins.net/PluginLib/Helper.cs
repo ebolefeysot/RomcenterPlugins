@@ -35,7 +35,14 @@ namespace PluginLib
             {
                 br.BaseStream.Seek(offset, SeekOrigin.Begin);
                 byte[] buffer = br.ReadBytes(length);
-                return System.Text.Encoding.ASCII.GetString(buffer).TrimEnd('\0', ' ');
+                // Replace non-ASCII bytes (>= 0x80) with '·' (U+00B7, Middle Dot)
+                char[] chars = new char[buffer.Length];
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    byte b = buffer[i];
+                    chars[i] = (b >= 0x20 && b <= 0x7E) ? (char)b : '·';
+                }
+                return new string(chars).TrimEnd('\0', ' ');
             }
             finally
             {
