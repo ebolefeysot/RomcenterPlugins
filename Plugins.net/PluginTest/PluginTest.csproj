@@ -59,6 +59,12 @@
     <None Update="a7800\Data\[22CA4444] Color Grid.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Fds\Data\[7680ACFD] Goonies fds.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Fds\Data\[BIOS] fds.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="gbx\Data\%281766e558%29 3-D Ultra Pinball - Thrillride %28USA%29_gbc.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

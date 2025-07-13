@@ -164,92 +164,6 @@ public partial class RcPlugin
     }
 
     /// <summary>
-    /// Determines the format of a ROM based on its header.
-    /// </summary>
-    /// <param name="rom">The ROM data as a byte array.</param>
-    /// <returns>The detected format of the ROM.</returns>
-    /// <remarks>
-    /// This method analyzes the ROM data to determine its format by checking for known
-    /// copier headers and other format-specific characteristics.
-    /// </remarks>
-    public FormatEnum GetHeaderFormat(byte[] rom)
-    {
-        if (rom == null || rom.Length < 512)
-        {
-            return FormatEnum.TooSmall;
-        }
-
-        int minSize = 0x8000;      // 32 KB
-        int maxSize = 0x600000;    // 6 MB
-
-        if (rom.Length < minSize)
-        {
-            return FormatEnum.TooSmall;
-        }
-
-        if (rom.Length > maxSize)
-        {
-            return FormatEnum.TooBig;
-        }
-
-        var header = new byte[512];
-        if (rom.Length >= 512)
-        {
-            Array.Copy(rom, 0, header, 0, 512);
-        }
-
-        //Check if it appears to be a valid SNES ROM (based on internal header)
-        if (!IsValidSnesRom(rom))
-        {
-            return FormatEnum.None;
-        }
-
-        //Check known copier headers
-        if (IsGameDoctorHeader(header)) return FormatEnum.GameDoctor;
-        if (IsProFighterHeaderSpecific(header)) return FormatEnum.fig;
-        if (IsSuperMagicomHeader(header)) return FormatEnum.smc;
-        if (IsSuperUfoHeader(header)) return FormatEnum.ufo;
-
-        // 512-byte header but not recognized → assume Super Magicom
-        if (Has512ByteHeader(rom.Length)) return FormatEnum.smc;
-
-        // No known copier header and no 512-byte header → plain SFC dump
-        return FormatEnum.sfc;
-    }
-
-    /// <summary>
-    /// Determines if the ROM data appears to be a valid SNES ROM.
-    /// </summary>
-    /// <param name="rom">The ROM data as a byte array.</param>
-    /// <returns>True if the ROM appears to be a valid SNES ROM; otherwise, false.</returns>
-    /// <remarks>
-    /// This method checks for valid title strings at known header locations for
-    /// LoROM, HiROM, and ExHiROM formats.
-    /// </remarks>
-    private bool IsValidSnesRom(byte[] rom)
-    {
-        int[] headerOffsets = { 0x7FC0, 0xFFC0, 0x40FFC0 }; // LoROM, HiROM, ExHiROM
-        foreach (int offset in headerOffsets)
-        {
-            if (rom.Length < offset + 21)
-                continue;
-
-            bool hasName = true;
-            for (int i = 0; i < 21; i++)
-            {
-                byte c = rom[offset + i];
-                if (c != 0x20 && (c < 0x20 || c > 0x7E)) // allow space or printable ASCII
-                {
-                    hasName = false;
-                    break;
-                }
-            }
-            if (hasName) return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// Determines if the header is a Game Doctor format header.
     /// </summary>
     /// <param name="header">The header data as a byte array.</param>
@@ -304,47 +218,6 @@ public partial class RcPlugin
     {
         // SWC header IDs: 0xAA, 0xBB at bytes 0 and 1, type = 0x05
         return header.Length >= 3 && header[8] == 0xAA && header[9] == 0xBB && header[10] == 0x04;
-    }
-
-    /// <summary>
-    /// Determines if the header is a Super UFO format header.
-    /// </summary>
-    /// <param name="header">The header data as a byte array.</param>
-    /// <returns>True if the header is a Super UFO format; otherwise, false.</returns>
-    private bool IsSuperUfoHeader(byte[] header)
-    {
-        return header.Length >= 8 &&
-               System.Text.Encoding.ASCII.GetString(header, 0, 8) == "SUPERUFO";
-    }
-
-    /// <summary>
-    /// Determines if the header is an MGD format header.
-    /// </summary>
-    /// <param name="header">The header data as a byte array.</param>
-    /// <returns>True if the header is an MGD format; otherwise, false.</returns>
-    /// <remarks>
-    /// Uses heuristic detection based on specific byte patterns.
-    /// Not as reliably detectable as other formats.
-    /// </remarks>
-    private bool IsMgdHeader(byte[] header)
-    {
-        // Heuristic: 0xF0 or 0x78 in specific positions or known patterns
-        // Not as reliably detectable as others
-        return header.Length >= 16 && header[0] == 0xF0 && header[1] == 0x78;
-    }
-
-    /// <summary>
-    /// Determines if the ROM size indicates the presence of a 512-byte header.
-    /// </summary>
-    /// <param name="romSize">The size of the ROM in bytes.</param>
-    /// <returns>True if the ROM size indicates a 512-byte header; otherwise, false.</returns>
-    /// <remarks>
-    /// Checks if the ROM size modulo 1024 equals 512, which would indicate a 512-byte header.
-    /// </remarks>
-    private bool Has512ByteHeader(int romSize)
-    {
-        // Check for 512-byte header alignment
-        return (romSize % 1024) == 512;
     }
 
     /// <summary>
@@ -548,54 +421,6 @@ public partial class RcPlugin
         }
 
         return false;
-    }
-
-    //private bool IsProFighterHeaderSpecific(byte[] header)
-    //{
-    //    if (header == null || header.Length < 4)
-    //        return false;
-
-    //    byte hirom = header[2];         // header->hirom
-    //    byte emulation1 = header[0];    // header->emulation1
-    //    byte emulation2 = header[1];    // header->emulation2
-
-    //    if (hirom == 0x80) // HiROM
-    //    {
-    //        if ((emulation1 == 0x77 || emulation1 == 0xF7) && emulation2 == 0x83)
-    //            return true;
-    //        if (emulation1 == 0xDD && (emulation2 == 0x82 || emulation2 == 0x02))
-    //            return true;
-    //        if (emulation1 == 0xFD && emulation2 == 0x82)
-    //            return true;
-    //    }
-    //    else if (hirom == 0x00) // LoROM
-    //    {
-    //        if ((emulation1 == 0x77 || emulation1 == 0x47) && emulation2 == 0x83)
-    //            return true;
-    //        if ((emulation1 == 0x00 || emulation1 == 0x40) &&
-    //            (emulation2 == 0x80 || emulation2 == 0x00))
-    //            return true;
-    //        if (emulation1 == 0x11 && emulation2 == 0x02)
-    //            return true;
-    //    }
-
-    //    return false;
-    //}
-
-    /// <summary>
-    /// Determines if the header is a Game Doctor format header using specific criteria.
-    /// </summary>
-    /// <param name="header">The header data as a byte array.</param>
-    /// <returns>True if the header is a Game Doctor format; otherwise, false.</returns>
-    private bool IsGameDoctorHeaderSpecific(byte[] header)
-    {
-        if (header == null || header.Length < 16)
-        {
-            return false;
-        }
-
-        string id = System.Text.Encoding.ASCII.GetString(header, 0, 16);
-        return id == "GAME DOCTOR SF 3";
     }
 
     /// <summary>
